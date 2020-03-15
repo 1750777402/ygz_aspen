@@ -2,9 +2,7 @@ package com.ygz.aspen.config;
 
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.github.pagehelper.PaginationInterceptor;
 import com.ygz.aspen.constant.DataSourceConstant;
-import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
