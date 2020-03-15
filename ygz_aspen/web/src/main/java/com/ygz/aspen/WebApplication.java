@@ -11,7 +11,7 @@ public class WebApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(WebApplication.class, args);
-        log.info("------------------ ygz-aspen is running on {} ------------------",context.getEnvironment().getActiveProfiles()[0]);
+        log.info("------------------ ygz-aspen is running on {} ------------------", context.getEnvironment().getActiveProfiles()[0]);
     }
 
 }
