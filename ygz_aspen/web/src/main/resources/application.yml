@@ -1,1 +1,6 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: ygz-aspen
 
