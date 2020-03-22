@@ -9,6 +9,6 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    List<User> selectUserById(@Param("id") Long id);
+    List<User> selectUserById(@Param("userId") Long userId);
 
 }

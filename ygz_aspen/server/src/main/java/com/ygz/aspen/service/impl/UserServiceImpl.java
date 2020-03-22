@@ -16,8 +16,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public User getUserById(Long id) {
-        List<User> users = userMapper.selectUserById(id);
+    public User getUserById(Long userId) {
+        List<User> users = userMapper.selectUserById(userId);
         return CollectionUtils.isEmpty(users) ? null : users.get(0);
     }
 }

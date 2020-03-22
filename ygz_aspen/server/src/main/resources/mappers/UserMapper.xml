@@ -3,12 +3,29 @@
 <mapper namespace="com.ygz.aspen.dao.UserMapper" >
 
     <resultMap id="BaseResultMap" type="com.ygz.aspen.model.User">
-        <id column="id" property="id" jdbcType="BIGINT"/>
-        <id column="username" property="username" jdbcType="VARCHAR"/>
+        <id column="userId" property="userId" jdbcType="BIGINT"/>
+        <id column="uname" property="uname" jdbcType="VARCHAR"/>
+        <id column="unick" property="unick" jdbcType="VARCHAR"/>
+        <id column="password" property="password" jdbcType="VARCHAR"/>
+        <id column="isDeleted" property="isDeleted" jdbcType="TINYINT"/>
+        <id column="createTime" property="createTime" jdbcType="BIGINT"/>
+        <id column="updateTime" property="updateTime" jdbcType="BIGINT"/>
     </resultMap>
     
     <select id="selectUserById" resultMap="BaseResultMap">
-        select * from `User` where id = #{id,jdbcType=BIGINT}
+        select * from `User` where userId = #{userId,jdbcType=BIGINT}
     </select>
+
+    <insert id="addUser" parameterType="com.ygz.aspen.model.User" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO
+            `user`(`uname`, `unick`, `password`, `createTime`, `updateTime`)
+        VALUES
+            (#{uname,jdbcType=VARCHAR},
+             #{unick,jdbcType=VARCHAR},
+             #{password,jdbcType=VARCHAR},
+             #{createTime,jdbcType=BIGINT},
+             #{updateTime,jdbcType=BIGINT})
+    </insert>
+
 
 </mapper>

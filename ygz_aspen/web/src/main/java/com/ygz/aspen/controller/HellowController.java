@@ -17,9 +17,8 @@ public class HellowController {
     private RedisService redisService;
 
     @GetMapping("/getUserById")
-    public String getUserById(@RequestParam("id") Long id){
-        User userById = userService.getUserById(id);
-        return userById == null ? "" : userById.getUname();
+    public User getUserById(@RequestParam("userId") Long userId){
+        return userService.getUserById(userId);
     }
 
     @GetMapping("/getCache")
