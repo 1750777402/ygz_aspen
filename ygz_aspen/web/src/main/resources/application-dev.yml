@@ -3,9 +3,9 @@ spring:          #表示该配置直接为Spring容器负责处理
     master:
       type: com.alibaba.druid.pool.DruidDataSource   #配置当前要使用的数据源的操作类型那个
       driver-class-name: com.mysql.cj.jdbc.Driver     #配置MySQL的驱动程序类
-      url: jdbc:mysql://cdb-7zq82x2m.cd.tencentcdb.com:3306/aspen?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
-        username: root
-        password: aspen!@#0918
+      url: jdbc:mysql://127.0.0.1:3306/aspen?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+      username: root
+      password: root
     　druid:
         # 配置测试查询语句
         validationQuery: SELECT 1 FROM DUAL
@@ -31,6 +31,6 @@ spring:          #表示该配置直接为Spring容器负责处理
   redis:
     host: 127.0.0.1
     port: 6379
-    password: aspen!@#0918
+    password:
 
 
