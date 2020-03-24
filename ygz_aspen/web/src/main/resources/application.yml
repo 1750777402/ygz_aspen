@@ -2,5 +2,5 @@ spring:
   profiles:
     active: dev
   application:
-    name: ygz-aspen
+    name: ygz_aspen
 
