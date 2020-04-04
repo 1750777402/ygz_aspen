@@ -33,4 +33,7 @@ spring:
     port: 6379
     password:
 
-
+logging:
+  path: E:/var/log
+  level:
+    root: debug

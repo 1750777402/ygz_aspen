@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<!--scan: 当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。-->
+<!--　　　　scanPeriod: 设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。-->
+<!--　　　　debug: 当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。-->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <!--应用名称-->
+    <property name="APP_NAME" value="ygz_aspen"/>
+    <!--日志文件保存路径-->
+    <!--<property name="LOG_FILE_PATH" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/logs}"/>-->
+
+    <property name="LOG_FILE_PATH" value="/data/log/ygz_aspen"/>
+    <contextName>${APP_NAME}</contextName>
+    <!--每天记录日志到文件appender-->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_FILE_PATH}/${APP_NAME}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_PATH}/${APP_NAME}-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{wwdzUserId}] [traceId:%X{wwdzTraceId}] %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--service相关日志start-->
+    <appender name="servicelog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_FILE_PATH}/servicelog.log</File>
+        　　　　　　　　　　　　<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        　　　　　　　　　　　　　　<fileNamePattern>${LOG_FILE_PATH}/servicelog-%d{yyyy-MM-dd}.log</fileNamePattern>
+        　　　　　　　　　　　　　　<maxHistory>5</maxHistory>
+        　　　　　　　　　　　　</rollingPolicy>
+        　　　　　　　　　　　　<encoder>
+        　　　　　　　　　　　　　　<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{wwdzUserId}] [traceId:%X{wwdzTraceId}] %logger{50} - %msg%n</pattern>
+        　　　　　　　　　　　　</encoder>
+    </appender>
+
+    <appender name="errorlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_FILE_PATH}/${APP_NAME}-error.log</File>
+        　　　　　　　　　　　　<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        　　　　　　　　　　　　　　<fileNamePattern>${LOG_FILE_PATH}/${APP_NAME}-error-%d{yyyy-MM-dd}.log</fileNamePattern>
+        　　　　　　　　　　　　　　<maxHistory>5</maxHistory>
+        　　　　　　　　　　　　</rollingPolicy>
+        　　　　　　　　　　　　<encoder>
+        　　　　　　　　　　　　　　<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{wwdzUserId}] [traceId:%X{wwdzTraceId}] %logger{50} - %msg%n</pattern>
+        　　　　　　　　　　　　</encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印错误日志 -->
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <root>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="errorlog"/>
+    </root>
+</configuration>
