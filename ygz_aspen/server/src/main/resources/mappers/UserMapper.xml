@@ -8,8 +8,8 @@
         <id column="unick" property="unick" jdbcType="VARCHAR"/>
         <id column="password" property="password" jdbcType="VARCHAR"/>
         <id column="isDeleted" property="isDeleted" jdbcType="TINYINT"/>
-        <id column="createTime" property="createTime" jdbcType="BIGINT"/>
-        <id column="updateTime" property="updateTime" jdbcType="BIGINT"/>
+        <id column="created" property="created" jdbcType="BIGINT"/>
+        <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
     
     <select id="selectUserById" resultMap="BaseResultMap">
@@ -18,13 +18,14 @@
 
     <insert id="addUser" parameterType="com.ygz.aspen.model.User" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO
-            `user`(`uname`, `unick`, `password`, `createTime`, `updateTime`)
+            `user`(`uname`, `unick`, `password`, `isDeleted` `createTime`, `updateTime`)
         VALUES
             (#{uname,jdbcType=VARCHAR},
              #{unick,jdbcType=VARCHAR},
              #{password,jdbcType=VARCHAR},
-             #{createTime,jdbcType=BIGINT},
-             #{updateTime,jdbcType=BIGINT})
+             #{isDeleted,jdbcType=TINYINT},
+             #{created,jdbcType=BIGINT},
+             #{updated,jdbcType=BIGINT})
     </insert>
 
 

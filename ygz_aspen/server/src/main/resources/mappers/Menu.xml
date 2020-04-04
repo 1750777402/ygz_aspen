@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ygz.aspen.dao.sys.MenuMapper" >
+
+    <resultMap id="BaseResultMap" type="com.ygz.aspen.model.sys.Menu">
+        <id column="menuId" property="menuId" jdbcType="BIGINT"/>
+        <id column="menuName" property="menuName" jdbcType="VARCHAR"/>
+        <id column="menuUrl" property="menuUrl" jdbcType="VARCHAR"/>
+        <id column="menuPermission" property="menuPermission" jdbcType="VARCHAR"/>
+        <id column="menuLevel" property="menuLevel" jdbcType="INTEGER"/>
+        <id column="menuParentId" property="menuParentId" jdbcType="BIGINT"/>
+        <id column="menuIcon" property="menuIcon" jdbcType="VARCHAR"/>
+        <id column="isDeleted" property="isDeleted" jdbcType="TINYINT"/>
+        <id column="created" property="created" jdbcType="BIGINT"/>
+        <id column="updated" property="updated" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <select id="selectMenuById" resultMap="BaseResultMap">
+        select * from `Menu` where munId = #{menuId,jdbcType=BIGINT}
+    </select>
+
+    <insert id="addMenu" parameterType="com.ygz.aspen.model.sys.Menu" useGeneratedKeys="true" keyProperty="menuId">
+        INSERT INTO
+            `menu`(`menuName`, `menuName`, `menuUrl`, `menuPermission`, `menuLevel`, `menuParentId`
+            , `menuIcon`, `isDeleted`, `created`, `updated`)
+        VALUES
+            (#{menuName,jdbcType=VARCHAR},
+             #{menuName,jdbcType=VARCHAR},
+             #{menuUrl,jdbcType=VARCHAR},
+             #{menuPermission,jdbcType=VARCHAR},
+             #{menuLevel,jdbcType=INTEGER},
+             #{menuParentId,jdbcType=BIGINT},
+             #{menuIcon,jdbcType=VARCHAR},
+             #{isDeleted,jdbcType=TINYINT},
+             #{created,jdbcType=BIGINT},
+             #{updated,jdbcType=BIGINT})
+    </insert>
+
+
+</mapper>

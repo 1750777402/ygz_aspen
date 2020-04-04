@@ -13,7 +13,7 @@ public class Menu extends BaseModel {
     /**
      * 菜单id
      */
-    private Long munId;
+    private Long menuId;
 
     /**
      * 菜单名称
