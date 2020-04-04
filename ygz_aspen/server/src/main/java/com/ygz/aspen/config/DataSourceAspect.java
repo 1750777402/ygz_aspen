@@ -11,7 +11,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.lang.reflect.Method;
 
 /**
- *
+ * 多数据源切面实现
  */
 @Aspect
 @Order(-2147483647)//保证该AOP在@Transactional之前执行
@@ -21,10 +21,9 @@ public class DataSourceAspect {
     /*
      * 定义一个切入点
      */
-    //@Pointcut("execution(* com.timer.service..*.*(..)) && execution(* update*(..))")
-//    @Pointcut("execution(* com.wwdz.mall.server.*..*(..))")
     @Pointcut("execution(* com.ygz.aspen.dao.*..*(..))")
     public void dataSourcePointCut(){}
+
     /*
      * 通过连接点切入
      */
@@ -38,20 +37,18 @@ public class DataSourceAspect {
 
             Method m = classz[0].getMethod(method, parameterTypes);
             if (m != null && m.isAnnotationPresent(TargetDataSource.class)){
-
                 //当前开启事务，不切换数据源
                 if (TransactionSynchronizationManager.isActualTransactionActive()) {
                     DynamicDataSource.putDataSource(DataSourceConstant.DATA_SOURCE_MASTER);
-                }
-                else{
+                }else{
                     TargetDataSource data = m.getAnnotation(TargetDataSource.class);
                     String dataSourceName = data.value();
                     //读库轮询切换  这里可以加载多个读库，然后随机取一个设置多读库数据源
-//                    if(DataSourceConstant.DATA_SOURCE_READ.equals(dataSourceName)){
-//                        DynamicDataSource.putDataSource(dataSourceName);
-//                    }else{
+                    if(DataSourceConstant.DATA_SOURCE_READ.equals(dataSourceName)){
                         DynamicDataSource.putDataSource(dataSourceName);
-//                    }
+                    }else{
+                        DynamicDataSource.putDataSource(dataSourceName);
+                    }
                 }
             }
         } catch (Throwable e) {
@@ -60,7 +57,7 @@ public class DataSourceAspect {
     }
 
     @AfterReturning(returning = "ret", pointcut = "dataSourcePointCut()")
-    public void doAfterReturning(Object ret) throws Throwable {
+    public void doAfterReturning(Object ret) {
         // 处理完请求，返回内容
         //log.info("RESPONSE : " + ret);
     }
