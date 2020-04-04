@@ -37,4 +37,4 @@ spring:
 logging:
   path: /data/logs
   level:
-    root: debug
+    root: info
