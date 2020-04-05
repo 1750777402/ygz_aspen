@@ -16,16 +16,15 @@
     </resultMap>
 
     <select id="selectMenuById" resultMap="BaseResultMap">
-        select * from `Menu` where munId = #{menuId,jdbcType=BIGINT}
+        select * from `Menu` where menuId = #{menuId,jdbcType=BIGINT}
     </select>
 
     <insert id="addMenu" parameterType="com.ygz.aspen.model.sys.Menu" useGeneratedKeys="true" keyProperty="menuId">
         INSERT INTO
-            `menu`(`menuName`, `menuName`, `menuUrl`, `menuPermission`, `menuLevel`, `menuParentId`
+            `menu`(`menuName`, `menuUrl`, `menuPermission`, `menuLevel`, `menuParentId`
             , `menuIcon`, `isDeleted`, `created`, `updated`)
         VALUES
             (#{menuName,jdbcType=VARCHAR},
-             #{menuName,jdbcType=VARCHAR},
              #{menuUrl,jdbcType=VARCHAR},
              #{menuPermission,jdbcType=VARCHAR},
              #{menuLevel,jdbcType=INTEGER},

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ygz.aspen.dao.sys.RoleMenuMapper" >
+
+    <resultMap id="BaseResultMap" type="com.ygz.aspen.model.sys.RoleMenu">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <id column="roleId" property="roleId" jdbcType="BIGINT"/>
+        <id column="menuId" property="menuId" jdbcType="BIGINT"/>
+        <id column="isDeleted" property="isDeleted" jdbcType="TINYINT"/>
+        <id column="created" property="created" jdbcType="BIGINT"/>
+        <id column="updated" property="updated" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <select id="selectRoleMenuById" resultMap="BaseResultMap">
+        select * from `RoleMenu` where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="addRoleMenu" parameterType="com.ygz.aspen.model.sys.RoleMenu" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+            `RoleMenu`(`roleId`, `menuId`, `isDeleted`, `created`, `updated`)
+        VALUES
+            (#{roleId,jdbcType=BIGINT},
+             #{menuId,jdbcType=BIGINT},
+             #{isDeleted,jdbcType=TINYINT},
+             #{created,jdbcType=BIGINT},
+             #{updated,jdbcType=BIGINT})
+    </insert>
+
+
+</mapper>
