@@ -4,7 +4,6 @@ import com.ygz.aspen.dao.sys.RoleMapper;
 import com.ygz.aspen.dao.sys.UserRoleMapper;
 import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.model.sys.UserRole;
-import com.ygz.aspen.param.BaseQueryParam;
 import com.ygz.aspen.param.sys.RoleDTO;
 import com.ygz.aspen.service.sys.RoleService;
 import org.apache.commons.collections4.CollectionUtils;

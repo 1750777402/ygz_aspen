@@ -4,7 +4,6 @@ import com.ygz.aspen.dao.sys.MenuMapper;
 import com.ygz.aspen.dao.sys.RoleMenuMapper;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.model.sys.RoleMenu;
-import com.ygz.aspen.param.BaseQueryParam;
 import com.ygz.aspen.param.sys.MenuDTO;
 import com.ygz.aspen.service.sys.MenuService;
 import org.apache.commons.collections4.CollectionUtils;
