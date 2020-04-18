@@ -15,6 +15,11 @@
     <select id="getUserById" resultType="com.ygz.aspen.model.sys.User">
         select * from `User` where userId = #{userId,jdbcType=BIGINT}
     </select>
+
+    <select id="getUserByUname" resultType="com.ygz.aspen.model.sys.User">
+        select * from `User` where uname = #{uname,jdbcType=VARCHAR}
+    </select>
+
     <select id="selectUserList" resultType="com.ygz.aspen.model.sys.User">
         select * from `User`
         where 1=1
@@ -40,6 +45,7 @@
             limit #{pageIndex}, #{pageSize}
         </if>
     </select>
+
 
     <insert id="addUser" parameterType="com.ygz.aspen.model.sys.User" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO

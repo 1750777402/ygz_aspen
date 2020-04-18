@@ -9,6 +9,8 @@ public interface UserService {
 
     User getUserById(Long userId);
 
+    User getUserByUname(String uname);
+
     int addUser(User user);
 
     List<User> selectUserList(UserDTO user);

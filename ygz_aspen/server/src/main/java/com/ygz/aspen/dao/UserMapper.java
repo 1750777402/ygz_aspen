@@ -15,4 +15,6 @@ public interface UserMapper {
     int addUser(User user);
 
     List<User> selectUserList(UserDTO user);
+
+    User getUserByUname(@Param("uname") String uname);
 }

@@ -4,6 +4,7 @@ import com.ygz.aspen.dao.UserMapper;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.param.sys.UserDTO;
 import com.ygz.aspen.service.sys.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long userId) {
         return userMapper.getUserById(userId);
+    }
+
+    @Override
+    public User getUserByUname(String uname) {
+        if(StringUtils.isEmpty(uname)){
+            return null;
+        }
+        return userMapper.getUserByUname(uname);
     }
 
     @Override
