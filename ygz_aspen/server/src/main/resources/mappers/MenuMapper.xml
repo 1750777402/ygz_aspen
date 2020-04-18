@@ -34,6 +34,9 @@
         <if test="menuParentId != null">
             and menuParentId = #{menuParentId, jdbcType=BIGINT}
         </if>
+        <if test="isDeleted != null">
+            and isDeleted = #{isDeleted, jdbcType=TINYINT}
+        </if>
         <if test="orderByClause != null">
             order by #{orderByClause}
         </if>

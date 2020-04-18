@@ -12,7 +12,7 @@
     </resultMap>
 
     <select id="selectUserRoleByUserId" resultMap="BaseResultMap">
-        select * from `UserRole` where userId = #{userId,jdbcType=BIGINT}
+        select * from `UserRole` where userId = #{userId,jdbcType=BIGINT} and isDeleted = 0
     </select>
 
     <insert id="addUserRole" parameterType="com.ygz.aspen.model.sys.UserRole" useGeneratedKeys="true" keyProperty="id">

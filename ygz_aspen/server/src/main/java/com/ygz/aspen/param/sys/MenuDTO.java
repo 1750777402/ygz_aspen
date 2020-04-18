@@ -1,10 +1,9 @@
 package com.ygz.aspen.param.sys;
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
-import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.param.BaseQueryParam;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
+
+import java.util.List;
 
 @Data
 public class MenuDTO extends BaseQueryParam {
@@ -39,5 +38,6 @@ public class MenuDTO extends BaseQueryParam {
      */
     private Long menuParentId;
 
+    private List<Long> menuIds;
 
 }

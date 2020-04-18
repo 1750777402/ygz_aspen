@@ -3,6 +3,7 @@ package com.ygz.aspen.service.sys.impl;
 import com.ygz.aspen.dao.sys.MenuMapper;
 import com.ygz.aspen.dao.sys.RoleMenuMapper;
 import com.ygz.aspen.model.sys.Menu;
+import com.ygz.aspen.model.sys.RoleMenu;
 import com.ygz.aspen.param.BaseQueryParam;
 import com.ygz.aspen.param.sys.MenuDTO;
 import com.ygz.aspen.service.sys.MenuService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -49,7 +51,14 @@ public class MenuServiceImpl implements MenuService {
         if(CollectionUtils.isEmpty(roleIds)){
             return null;
         }
-
+        List<RoleMenu> roleMenus = roleMenuMapper.selectRoleMenuByRoleIds(roleIds);
+        if(CollectionUtils.isNotEmpty(roleMenus)){
+            List<Long> menuIds = roleMenus.stream().map(roleMenu -> roleMenu.getMenuId()).collect(Collectors.toList());
+            MenuDTO dto = new MenuDTO();
+            dto.setMenuIds(menuIds);
+            dto.setIsDeleted(0);
+            return menuMapper.selectMenuList(dto);
+        }
         return null;
     }
 }
