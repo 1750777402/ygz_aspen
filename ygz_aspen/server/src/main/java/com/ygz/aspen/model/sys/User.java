@@ -1,5 +1,6 @@
-package com.ygz.aspen.model;
+package com.ygz.aspen.model.sys;
 
+import com.ygz.aspen.model.BaseModel;
 import lombok.Data;
 
 @Data

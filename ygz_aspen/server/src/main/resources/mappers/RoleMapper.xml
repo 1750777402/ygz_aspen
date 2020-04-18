@@ -11,11 +11,35 @@
         <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
 
-    <select id="selectMenuById" resultMap="BaseResultMap">
+    <select id="getRoleById" resultMap="BaseResultMap">
         select * from `Role` where roleId = #{roleId,jdbcType=BIGINT}
     </select>
 
-    <insert id="addMenu" parameterType="com.ygz.aspen.model.sys.Role" useGeneratedKeys="true" keyProperty="roleId">
+    <select id="selectRoleList" resultType="com.ygz.aspen.model.sys.Role">
+        select * from `Role`
+        where 1=1
+        <if test="roleName != null">
+            and roleName = #{roleName, jdbcType=VARCHAR}
+        </if>
+        <if test="isDeleted != null">
+            and isDeleted = #{isDeleted, jdbcType=TINYINT}
+        </if>
+        <if test="roleIds != null">
+            and roleId in
+            <foreach collection="roleIds" open="(" separator="," close=")" item="rId">
+                #{rId}
+            </foreach>
+        </if>
+        <if test="orderByClause != null">
+            order by #{orderByClause}
+        </if>
+        <if test="pageIndex != null and pageIndex >= 0 and pageSize != null and pageSize > 0">
+            limit #{pageIndex}, #{pageSize}
+        </if>
+    </select>
+
+
+    <insert id="addRole" parameterType="com.ygz.aspen.model.sys.Role" useGeneratedKeys="true" keyProperty="roleId">
         INSERT INTO
             `Role`(`roleName`, `roleType`, `isDeleted`, `created`, `updated`)
         VALUES

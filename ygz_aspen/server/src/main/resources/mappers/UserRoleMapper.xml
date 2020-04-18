@@ -11,8 +11,8 @@
         <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
 
-    <select id="selectUserRoleById" resultMap="BaseResultMap">
-        select * from `UserRole` where id = #{id,jdbcType=BIGINT}
+    <select id="selectUserRoleByUserId" resultMap="BaseResultMap">
+        select * from `UserRole` where userId = #{userId,jdbcType=BIGINT}
     </select>
 
     <insert id="addUserRole" parameterType="com.ygz.aspen.model.sys.UserRole" useGeneratedKeys="true" keyProperty="id">

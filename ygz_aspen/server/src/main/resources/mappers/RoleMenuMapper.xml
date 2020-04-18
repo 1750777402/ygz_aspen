@@ -14,6 +14,14 @@
     <select id="selectRoleMenuById" resultMap="BaseResultMap">
         select * from `RoleMenu` where id = #{id,jdbcType=BIGINT}
     </select>
+    <select id="selectRoleMenuByRoleIds" resultType="com.ygz.aspen.model.sys.RoleMenu">
+        select * from `RoleMenu`
+        where 1=1
+        and roleId in
+        <foreach collection="roleIds" item="rId" open="(" separator="," close=")">
+            #{rId}
+        </foreach>
+    </select>
 
     <insert id="addRoleMenu" parameterType="com.ygz.aspen.model.sys.RoleMenu" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO

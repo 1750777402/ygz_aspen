@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ygz.aspen.dao.UserMapper" >
 
-    <resultMap id="BaseResultMap" type="com.ygz.aspen.model.User">
+    <resultMap id="BaseResultMap" type="com.ygz.aspen.model.sys.User">
         <id column="userId" property="userId" jdbcType="BIGINT"/>
         <id column="uname" property="uname" jdbcType="VARCHAR"/>
         <id column="unick" property="unick" jdbcType="VARCHAR"/>
@@ -12,11 +12,36 @@
         <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
     
-    <select id="selectUserById" resultMap="BaseResultMap">
+    <select id="getUserById" resultType="com.ygz.aspen.model.sys.User">
         select * from `User` where userId = #{userId,jdbcType=BIGINT}
     </select>
+    <select id="selectUserList" resultType="com.ygz.aspen.model.sys.User">
+        select * from `User`
+        where 1=1
+        <if test="uname != null">
+            and uname = #{uname, jdbcType=VARCHAR}
+        </if>
+        <if test="unick != null">
+            and unick = #{unick, jdbcType=VARCHAR}
+        </if>
+        <if test="isDeleted != null">
+            and isDeleted = #{isDeleted, jdbcType=TINYINT}
+        </if>
+        <if test="userIds != null">
+            and userId in
+            <foreach collection="userIds" open="(" separator="," close=")" item="uId">
+                #{uId}
+            </foreach>
+        </if>
+        <if test="orderByClause != null">
+            order by #{orderByClause}
+        </if>
+        <if test="pageIndex != null and pageIndex >= 0 and pageSize != null and pageSize > 0">
+            limit #{pageIndex}, #{pageSize}
+        </if>
+    </select>
 
-    <insert id="addUser" parameterType="com.ygz.aspen.model.User" useGeneratedKeys="true" keyProperty="userId">
+    <insert id="addUser" parameterType="com.ygz.aspen.model.sys.User" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO
             `user`(`uname`, `unick`, `password`, `isDeleted` `createTime`, `updateTime`)
         VALUES
