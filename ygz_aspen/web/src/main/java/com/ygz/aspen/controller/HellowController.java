@@ -31,7 +31,7 @@ public class HellowController {
         return "test2";
     }
 
-    @AccessLimit(perSecond=0.3,timeOut = 5000)
+    @AccessLimit(perSecond=0.3)
     @GetMapping("/test3")
     public String test3(){
         return "test3";

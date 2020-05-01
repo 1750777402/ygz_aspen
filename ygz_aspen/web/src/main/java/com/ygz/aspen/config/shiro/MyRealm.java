@@ -1,6 +1,7 @@
 package com.ygz.aspen.config.shiro;
 
 
+import com.ygz.aspen.common.base.UnauthorizedException;
 import com.ygz.aspen.common.constant.Constant;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.model.sys.Role;
@@ -16,7 +17,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 

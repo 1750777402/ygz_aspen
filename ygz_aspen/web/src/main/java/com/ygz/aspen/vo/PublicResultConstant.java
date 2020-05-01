@@ -26,7 +26,7 @@ public class PublicResultConstant {
 
     public static final String ROLE_USER_USED  = "角色使用中，不可删除";
 
-    public static final String USER_NO_PERMITION  = "当前用户无该接口权限";
+    public static final String USER_NO_PERMITION  = "权限不足";
 
     public static final String VERIFY_PARAM_ERROR  = "校验码错误";
 

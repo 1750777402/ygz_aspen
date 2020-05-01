@@ -35,6 +35,7 @@ public class AccessLimitAspect extends AbstractAspectManager {
 
     //添加速率.保证是单例的
     private static RateLimiter rateLimiter = RateLimiter.create(1000);
+
     //使用url做为key,存放令牌桶 防止每次重新创建令牌桶
     private static  Map<String, RateLimiter> limitMap = Maps.newConcurrentMap();
 
