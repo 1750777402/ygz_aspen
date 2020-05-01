@@ -1,4 +1,4 @@
-package com.ygz.aspen.config;
+package com.ygz.aspen.aspect;
 
 import com.ygz.aspen.annotation.Pass;
 import com.ygz.aspen.common.constant.Constant;
@@ -27,7 +27,7 @@ import java.util.jar.JarFile;
  */
 @Component
 @Slf4j
-public class PassCommandLineRunner implements CommandLineRunner {
+public class PassAspect implements CommandLineRunner {
 
 
     @Value("${controller.scanPackage}")
