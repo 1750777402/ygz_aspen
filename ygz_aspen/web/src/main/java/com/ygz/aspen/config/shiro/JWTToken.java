@@ -3,8 +3,7 @@ package com.ygz.aspen.config.shiro;
 import org.apache.shiro.authc.AuthenticationToken;
 
 /**
- * @author liugh
- * @since 2018-05-03
+ * @author ygz
  */
 public class JWTToken implements AuthenticationToken {
 

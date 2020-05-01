@@ -38,3 +38,6 @@ logging:
   path: /data/logs
   level:
     root: info
+
+controller:
+  scanPackage: com.ygz.aspen.controller
