@@ -34,6 +34,12 @@
         <if test="menuParentId != null">
             and menuParentId = #{menuParentId, jdbcType=BIGINT}
         </if>
+        <if test="menuIds != null">
+            and menuId in
+            <foreach collection="menuIds" open="(" separator="," close=")" item="mId">
+                #{mId}
+            </foreach>
+        </if>
         <if test="isDeleted != null">
             and isDeleted = #{isDeleted, jdbcType=TINYINT}
         </if>

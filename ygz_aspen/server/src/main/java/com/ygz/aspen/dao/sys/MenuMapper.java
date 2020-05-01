@@ -14,6 +14,6 @@ public interface MenuMapper {
 
     int addMenu(Menu menu);
 
-    List<Menu> selectMenuList(@Param("menuDTO")MenuDTO menuDTO);
+    List<Menu> selectMenuList(MenuDTO menuDTO);
 
 }

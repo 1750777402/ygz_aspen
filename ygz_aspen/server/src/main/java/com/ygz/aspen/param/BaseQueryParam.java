@@ -13,12 +13,12 @@ public class BaseQueryParam extends BaseModel implements Serializable {
     /**
      * 第几页
      */
-    private Integer pageIndex = 1;
+    private Integer pageIndex;
 
     /**
      * 每页大小
      */
-    private Integer pageSize = 10;
+    private Integer pageSize;
 
     /**
      * 排序 例：created desc

@@ -88,7 +88,7 @@ public class PassAspect implements CommandLineRunner {
     }
 
     private String  getRequestUrl(String[] classUrl, String[] methodUrl, StringBuilder sb,String requestName) {
-        sb.append("/api/v1");
+//        sb.append("/api/v1");
         if(!ComUtil.isEmpty(classUrl)){
             for (String url:classUrl) {
                 sb.append(url+"/");
