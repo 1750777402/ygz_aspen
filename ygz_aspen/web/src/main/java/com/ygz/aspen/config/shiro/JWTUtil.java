@@ -21,11 +21,11 @@ public class JWTUtil {
      * @param secret 用户的密码
      * @return 是否正确
      */
-    public static boolean verify(String token, String userNo, String secret) {
+    public static boolean verify(String token, String uname, String secret) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm)
-                    .withClaim("userNo", userNo)
+                    .withClaim("uname", uname)
                     .build();
             verifier.verify(token);
             return true;
@@ -38,10 +38,10 @@ public class JWTUtil {
      * 获得token中的信息无需secret解密也能获得
      * @return token中包含的用户名
      */
-    public static String getUserNo(String token) {
+    public static String getUname(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim("userNo").asString();
+            return jwt.getClaim("uname").asString();
         } catch (JWTDecodeException e) {
             return null;
         }
@@ -49,22 +49,26 @@ public class JWTUtil {
 
     /**
      * 生成签名,指定时间后过期,一经生成不可修改，令牌在指定时间内一直有效
-     * @param userNo 用户编号
+     * @param uname 用户编号
      * @param secret 用户的密码
      * @return 加密的token
      */
-    public static String sign(String userNo, String secret) {
+    public static String sign(String uname, String secret) {
         try {
             Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // 附带username信息
             return JWT.create()
-                    .withClaim("userNo", userNo)
+                    .withClaim("uname", uname)
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
             return null;
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.printf(sign("ygz", "123456"));
     }
 
 }

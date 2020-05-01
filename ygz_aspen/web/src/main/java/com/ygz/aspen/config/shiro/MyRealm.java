@@ -5,7 +5,6 @@ import com.ygz.aspen.common.constant.Constant;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.model.sys.User;
-import com.ygz.aspen.param.sys.MenuDTO;
 import com.ygz.aspen.service.sys.MenuService;
 import com.ygz.aspen.service.sys.RoleService;
 import com.ygz.aspen.service.sys.UserService;
@@ -62,8 +61,8 @@ public class MyRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         List<String> permissions = new ArrayList<>();
 
-        String userNo = JWTUtil.getUserNo(principals.toString());
-        User user = userService.getUserByUname(userNo);
+        String uname = JWTUtil.getUname(principals.toString());
+        User user = userService.getUserByUname(uname);
         List<Role> roles = roleService.selectUserRoleByUserId(user.getUserId());
         if(CollectionUtils.isNotEmpty(roles)){
           //添加控制角色级别的权限
@@ -100,15 +99,15 @@ public class MyRealm extends AuthorizingRealm {
             return new SimpleAuthenticationInfo(token, token, this.getName());
         }
         // 解密获得username，用于和数据库进行对比
-        String userNo = JWTUtil.getUserNo(token);
-        if (StringUtils.isEmpty(userNo)) {
+        String uname = JWTUtil.getUname(token);
+        if (StringUtils.isEmpty(uname)) {
             throw new UnauthorizedException("token invalid");
         }
-        User user = userService.getUserByUname(userNo);
+        User user = userService.getUserByUname(uname);
         if (user == null) {
             throw new UnauthorizedException("User didn't existed!");
         }
-        if (! JWTUtil.verify(token, userNo, user.getPassword())) {
+        if (! JWTUtil.verify(token, uname, user.getPassword())) {
             throw new UnauthorizedException("Username or password error");
         }
         return new SimpleAuthenticationInfo(token, token, this.getName());
