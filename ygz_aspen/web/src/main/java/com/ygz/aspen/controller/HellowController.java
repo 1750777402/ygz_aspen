@@ -24,7 +24,9 @@ public class HellowController {
     @Pass
     @GetMapping("/test1")
     public String test1(){
-        return "test1";
+        User user = AspenContextHolder.get().getUser();
+        AspenContextHolder.get().getUser();
+        return user.getUname();
     }
 
     @RequiresPermissions("user:test")

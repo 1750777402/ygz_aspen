@@ -28,8 +28,6 @@ public class Constant {
     //菜单类型，1：菜单  2：按钮操作
     public static final int TYPE_BUTTON = 2;
 
-    public static Boolean isPass = false;
-
     //用户名登录
     public static final int LOGIN_USERNAME = 0;
     //手机登录

@@ -56,19 +56,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         getSubject(request, response).login(token);
         // 如果没有抛出异常则代表登入成功，返回true
 
-
         //设置当前登录用户信息
-        User user = (User) SecurityUtils.getSubject().getPrincipal();
-        AspenContext aspenContext = new AspenContext(user);
-        AspenContextHolder.set(aspenContext);
-        String appVersion = httpServletRequest.getHeader(APP_VERSION);
-        if(StringUtils.isNotEmpty(appVersion)){
-            AspenContextHolder.get().addContext(APP_VERSION, appVersion);
-        }
-        String deviceOS = httpServletRequest.getHeader(DEVICEOS);
-        if(StringUtils.isNotEmpty(deviceOS)){
-            AspenContextHolder.get().addContext(DEVICEOS, deviceOS);
-        }
+        setCurrentUserInfo(httpServletRequest);
         return true;
     }
 
@@ -111,6 +100,17 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         }
         String authorization = httpServletRequest.getHeader("Authorization");
         if (verificationPassAnnotation(request, response, httpServletRequest, authorization)){
+            if(StringUtils.isNotEmpty(authorization)){
+                //如果标注了Pass注解的接口有token信息  那么依旧设置用户信息  让免登的接口也可获取到用户信息
+                String uname = JWTUtil.getUname(authorization);
+                if (StringUtils.isNotEmpty(uname)) {
+                    if (userService == null) {
+                        this.userService = SpringContextBeanUtil.getBean(UserService.class);
+                    }
+                    User user = userService.getUserByUname(uname);
+                    setPassCurrentUser(user, httpServletRequest);
+                }
+            }
             return true;
         }
         if(StringUtils.isEmpty(authorization)){
@@ -118,6 +118,24 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             return false;
         }
         return super.preHandle(request, response);
+    }
+
+    private void setCurrentUserInfo(HttpServletRequest httpServletRequest){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        setPassCurrentUser(user, httpServletRequest);
+    }
+
+    private void setPassCurrentUser(User user, HttpServletRequest httpServletRequest){
+        AspenContext aspenContext = new AspenContext(user);
+        AspenContextHolder.set(aspenContext);
+        String appVersion = httpServletRequest.getHeader(APP_VERSION);
+        if(StringUtils.isNotEmpty(appVersion)){
+            AspenContextHolder.get().addContext(APP_VERSION, appVersion);
+        }
+        String deviceOS = httpServletRequest.getHeader(DEVICEOS);
+        if(StringUtils.isNotEmpty(deviceOS)){
+            AspenContextHolder.get().addContext(DEVICEOS, deviceOS);
+        }
     }
 
     /**
@@ -134,26 +152,13 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             String[] split = urlMethod.split(":--:");
             if(split[0].equals(httpServletRequest.getRequestURI())
                     && (split[1].equals(httpServletRequest.getMethod()) ||  split[1].equals("RequestMapping"))){
-                Constant.isPass=true;
-                if(StringUtils.isEmpty(authorization)){
-                    //如果当前url不需要认证，则注入当前登录用户时，给一个空的
-                    httpServletRequest.setAttribute("currentUser",new User());
                     return true;
-                }else {
-                    super.preHandle(request, response);
-                }
             }
             if(StringUtils.countMatches(urlMethod, "{")>0 &&
                     StringUtils.countMatches(urlMethod, "/") == StringUtils.countMatches(split[0], "/")
                     && (split[1].equals(httpServletRequest.getMethod()) ||  split[1].equals("RequestMapping"))){
                 if(isSameUrl(split[0],httpServletRequest.getRequestURI())){
-                    Constant.isPass=true;
-                    if(StringUtils.isEmpty(authorization)){
-                        httpServletRequest.setAttribute("currentUser",new User());
-                        return true;
-                    }else {
-                        super.preHandle(request, response);
-                    }
+                    return true;
                 }
             }
         }

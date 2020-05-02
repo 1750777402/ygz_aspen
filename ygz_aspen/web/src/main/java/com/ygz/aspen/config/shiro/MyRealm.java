@@ -2,7 +2,6 @@ package com.ygz.aspen.config.shiro;
 
 
 import com.ygz.aspen.common.base.UnauthorizedException;
-import com.ygz.aspen.common.constant.Constant;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.model.sys.User;
@@ -63,8 +62,6 @@ public class MyRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         List<String> permissions = new ArrayList<>();
 
-//        String uname = JWTUtil.getUname(principals.toString());
-//        User user = userService.getUserByUname(uname);
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         List<Role> roles = roleService.selectUserRoleByUserId(user.getUserId());
         if(CollectionUtils.isNotEmpty(roles)){
@@ -98,10 +95,7 @@ public class MyRealm extends AuthorizingRealm {
             this.userService = SpringContextBeanUtil.getBean(UserService.class);
         }
         String token = (String) auth.getCredentials();
-        if(Constant.isPass){
-            return new SimpleAuthenticationInfo(token, token, this.getName());
-        }
-        // 解密获得username，用于和数据库进行对比
+        // 解密获得uname，用于和数据库进行对比
         String uname = JWTUtil.getUname(token);
         if (StringUtils.isEmpty(uname)) {
             throw new UnauthorizedException("token invalid");
