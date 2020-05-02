@@ -7,8 +7,11 @@ Aspen
 ## 二、项目特性
 
 1.自定义了一些注解，做了一下基本的项目组件
+
 2.支持按钮级别的权限认证
+
 3.支持mysql和redis多数据源
+
 4.支持一键生成数据库对应的单表增删改查相关代码
 
 ## 三、程序逻辑
@@ -31,7 +34,7 @@ Aspen
     
 -   修改application-dev.yml，更新MySQL账号和密码
     
--   Eclipse、IDEA运行SpringbootApplication.java，则可启动项目。或在liugh-parent目录下运行命令mvn clean package，然后在liugh-web/target目录下运行java -jar liugh-web.jar命令
+-   Eclipse、IDEA运行WebApplication.java，则可启动项目。或在liugh-parent目录下运行命令mvn clean package，然后在liugh-web/target目录下运行java -jar liugh-web.jar命令
 
 -   访问登录接口：localhost:8080/login   账号：    密码：  
     
