@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller统一异常处理
- * @author : liugh
- * @date : 2018/05/08
+ * @author : ygz
  */
 @ControllerAdvice
 public class AllControllerAdvice {
