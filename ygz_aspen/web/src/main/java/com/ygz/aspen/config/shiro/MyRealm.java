@@ -12,6 +12,7 @@ import com.ygz.aspen.service.sys.UserService;
 import com.ygz.aspen.utils.SpringContextBeanUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
@@ -48,6 +49,7 @@ public class MyRealm extends AuthorizingRealm {
 
     /**
      * 只有当需要检测用户权限的时候才会调用此方法，例如checkRole,checkPermission之类的
+     * 能到这个方法肯定是登录信息已经验证通过了 所以可以直接使用SecurityUtils.getSubject().getPrincipal();获取登录用户信息
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -61,8 +63,9 @@ public class MyRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         List<String> permissions = new ArrayList<>();
 
-        String uname = JWTUtil.getUname(principals.toString());
-        User user = userService.getUserByUname(uname);
+//        String uname = JWTUtil.getUname(principals.toString());
+//        User user = userService.getUserByUname(uname);
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
         List<Role> roles = roleService.selectUserRoleByUserId(user.getUserId());
         if(CollectionUtils.isNotEmpty(roles)){
           //添加控制角色级别的权限
@@ -107,9 +110,9 @@ public class MyRealm extends AuthorizingRealm {
         if (user == null) {
             throw new UnauthorizedException("User didn't existed!");
         }
-        if (! JWTUtil.verify(token, uname, user.getPassword())) {
+        if (!JWTUtil.verify(token, uname, user.getPassword())) {
             throw new UnauthorizedException("Username or password error");
         }
-        return new SimpleAuthenticationInfo(token, token, this.getName());
+        return new SimpleAuthenticationInfo(user, token, this.getName());
     }
 }

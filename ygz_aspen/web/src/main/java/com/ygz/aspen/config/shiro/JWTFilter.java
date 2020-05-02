@@ -2,12 +2,15 @@ package com.ygz.aspen.config.shiro;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ygz.aspen.common.constant.Constant;
+import com.ygz.aspen.context.AspenContext;
+import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.service.sys.UserService;
 import com.ygz.aspen.utils.SpringContextBeanUtil;
 import com.ygz.aspen.vo.PublicResultConstant;
 import com.ygz.aspen.vo.ResponseHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +20,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+
+import static com.ygz.aspen.context.AspenContextHolder.APP_VERSION;
+import static com.ygz.aspen.context.AspenContextHolder.DEVICEOS;
 
 /**
  * 代码的执行流程preHandle->isAccessAllowed->isLoginAttempt->executeLogin
@@ -49,7 +55,19 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         getSubject(request, response).login(token);
         // 如果没有抛出异常则代表登入成功，返回true
-        setUserBean(request, response, token);
+
+        //设置当前登录用户信息
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        AspenContext aspenContext = new AspenContext(user);
+        AspenContextHolder.set(aspenContext);
+        String appVersion = httpServletRequest.getHeader(APP_VERSION);
+        if(StringUtils.isNotEmpty(appVersion)){
+            AspenContextHolder.get().addContext(APP_VERSION, appVersion);
+        }
+        String deviceOS = httpServletRequest.getHeader(DEVICEOS);
+        if(StringUtils.isNotEmpty(deviceOS)){
+            AspenContextHolder.get().addContext(DEVICEOS, deviceOS);
+        }
         return true;
     }
 
@@ -76,12 +94,10 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     }
 
     private void setUserBean(ServletRequest request, ServletResponse response, JWTToken token) {
-        if (this.userService == null) {
-            this.userService = SpringContextBeanUtil.getBean(UserService.class);
-        }
-        String uname =  JWTUtil.getUname(token.getPrincipal().toString());
-        User userBean = userService.getUserByUname(uname);
-        request.setAttribute("currentUser", userBean);
+
+//        String uname =  JWTUtil.getUname(token.getPrincipal().toString());
+//        User userBean = userService.getUserByUname(uname);
+//        request.setAttribute("currentUser", userBean);
     }
 
     /**
