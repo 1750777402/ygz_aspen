@@ -2,6 +2,8 @@ package com.ygz.aspen.controller;
 
 import com.ygz.aspen.annotation.AccessLimit;
 import com.ygz.aspen.annotation.Pass;
+import com.ygz.aspen.context.AspenContextHolder;
+import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.service.RedisService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,9 @@ public class HellowController {
     @RequiresPermissions("user:test")
     @GetMapping("/test2")
     public String test2(){
-        return "test2";
+        User user = AspenContextHolder.get().getUser();
+        AspenContextHolder.get().getUser();
+        return user.getUname();
     }
 
     @AccessLimit(perSecond=0.3)

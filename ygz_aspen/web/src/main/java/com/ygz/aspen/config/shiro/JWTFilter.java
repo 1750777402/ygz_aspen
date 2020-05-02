@@ -56,6 +56,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         getSubject(request, response).login(token);
         // 如果没有抛出异常则代表登入成功，返回true
 
+
         //设置当前登录用户信息
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         AspenContext aspenContext = new AspenContext(user);
@@ -91,13 +92,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             }
         }
         return true;
-    }
-
-    private void setUserBean(ServletRequest request, ServletResponse response, JWTToken token) {
-
-//        String uname =  JWTUtil.getUname(token.getPrincipal().toString());
-//        User userBean = userService.getUserByUname(uname);
-//        request.setAttribute("currentUser", userBean);
     }
 
     /**
