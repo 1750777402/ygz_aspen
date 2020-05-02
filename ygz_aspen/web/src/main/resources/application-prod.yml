@@ -3,9 +3,9 @@ spring:
     master:
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://cdb-7zq82x2m.cd.tencentcdb.com:10131/aspen?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+      url: jdbc:mysql://127.0.0.1:3306/aspen?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
       username: root
-      password: aspen!@#0918
+      password: root
     　druid:
       # 配置测试查询语句
       validationQuery: SELECT 1 FROM DUAL
