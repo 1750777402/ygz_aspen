@@ -25,7 +25,8 @@ public class AspenHandlerInterceptor implements HandlerInterceptor {
     //方法执行之后
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        //清理掉当前登录用户信息
+        //清理掉当前登录用户信息 这里必须清理
+        //否则线程池复用线程时，可能会把当前线程的信息带到下一次请求中去
         AspenContextHolder.clear();
     }
 }
