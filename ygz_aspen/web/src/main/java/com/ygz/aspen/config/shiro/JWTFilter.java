@@ -7,8 +7,8 @@ import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.service.sys.UserService;
 import com.ygz.aspen.utils.SpringContextBeanUtil;
-import com.ygz.aspen.vo.PublicResultConstant;
-import com.ygz.aspen.vo.ResponseHelper;
+import com.ygz.aspen.vo.ResponseModel;
+import com.ygz.aspen.vo.ResultMsgEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
@@ -199,7 +199,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             response.setCharacterEncoding("utf-8");
             out = response.getWriter();
             response.setContentType("application/json; charset=utf-8");
-            out.print(JSONObject.toJSONString(ResponseHelper.validationFailure(PublicResultConstant.UNAUTHORIZED)));
+            out.print(JSONObject.toJSONString(new ResponseModel<>(ResultMsgEnum.UNAUTHORIZED)));
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,9 +2,8 @@ package com.ygz.aspen.config;
 
 import com.ygz.aspen.common.base.BusinessException;
 import com.ygz.aspen.common.base.UnauthorizedException;
-import com.ygz.aspen.vo.PublicResultConstant;
-import com.ygz.aspen.vo.ResponseHelper;
 import com.ygz.aspen.vo.ResponseModel;
+import com.ygz.aspen.vo.ResultMsgEnum;
 import org.apache.shiro.ShiroException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +41,8 @@ public class AllControllerAdvice {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public ResponseModel<String> errorHandler(Exception ex) {
-        ex.printStackTrace();
-        logger.error("请求失败：{}", ex.getMessage());
-        return ResponseHelper.validationFailure(PublicResultConstant.FAILED);
+        logger.error("请求失败：{}", ex);
+        return new ResponseModel<>(ResultMsgEnum.FAILED);
     }
 
     /**
@@ -55,8 +53,8 @@ public class AllControllerAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseBody
-    public ResponseModel<String> handleUnauthorized() {
-        return ResponseHelper.validationFailure(PublicResultConstant.USER_NO_PERMITION);
+    public ResponseModel handleUnauthorized() {
+        return new ResponseModel(ResultMsgEnum.UNAUTHORIZED);
     }
 
     /**
@@ -69,7 +67,7 @@ public class AllControllerAdvice {
     @ExceptionHandler(ShiroException.class)
     @ResponseBody
     public ResponseModel<String> handleShiroException(ShiroException e) {
-        return ResponseHelper.validationFailure(PublicResultConstant.USER_NO_PERMITION);
+        return new ResponseModel(ResultMsgEnum.USER_NO_POWER);
     }
 
     /**
@@ -81,11 +79,8 @@ public class AllControllerAdvice {
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
     public ResponseModel handleBusinessException(BusinessException e) {
-        if (e instanceof BusinessException) {
-            logger.info("操作失败：" + e.getMessage());
-            return ResponseHelper.validationFailure("操作失败：" + e.getMessage());
-        }
-        return ResponseHelper.validationFailure(PublicResultConstant.ERROR);
+        logger.info("操作失败：" + e.getMessage());
+        return new ResponseModel(ResultMsgEnum.ERROR.getCode(), e.getMessage(), null);
     }
 
 

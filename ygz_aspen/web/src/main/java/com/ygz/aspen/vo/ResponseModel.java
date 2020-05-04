@@ -9,40 +9,36 @@ import java.io.Serializable;
 
 public class ResponseModel<T> implements Serializable {
     private static final long serialVersionUID = -1241360949457314497L;
-    private int status;
     private T result;
     private String message;
-    private String code;
+    private Integer code;
 
     public ResponseModel() {
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getResponse();
-        response.setCharacterEncoding("UTF-8");
+    }
+
+    public ResponseModel(Integer code, String message, T res){
+        this.message = message;
+        this.code = code;
+        this.result = res;
+    }
+
+    public ResponseModel(ResultMsgEnum resultMsgEnum){
+        this.code = resultMsgEnum.getCode();
+        this.message = resultMsgEnum.getMessage();
+    }
+
+    public ResponseModel(T result){
+        this.result = result;
+        this.code = ResultMsgEnum.SUCCESS.getCode();
+        this.message = ResultMsgEnum.SUCCESS.getMessage();
     }
 
     public String getMessage() {
         return this.message;
     }
 
-    public String getCode() {
-        return this.code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public void setMessage(String message) {
         this.message = message;
-    }
-
-
-    public int getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public T getResult() {
@@ -53,7 +49,15 @@ public class ResponseModel<T> implements Serializable {
         this.result = result;
     }
 
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
     public String toString() {
-        return "ResponseModel [status=" + this.status + ", result=" + this.result +  ", message=" + this.message + ", code=" + this.code + "]";
+        return "ResponseModel [result=" + this.result +  ", message=" + this.message + ", code=" + this.code + "]";
     }
 }
