@@ -16,6 +16,7 @@ public class HellowController {
     @Autowired
     private RedisService redisService;
 
+    @Pass
     @GetMapping("/")
     public String getCache(){
         return redisService.get("ygz_aspen");
