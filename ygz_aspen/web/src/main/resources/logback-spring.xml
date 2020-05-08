@@ -21,7 +21,7 @@
             <maxHistory>5</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{wwdzUserId}] [traceId:%X{wwdzTraceId}] %logger{50} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{aspenUserId}] [traceId:%X{aspenTraceId}] %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -33,7 +33,7 @@
         　　　　　　　　　　　　　　<maxHistory>5</maxHistory>
         　　　　　　　　　　　　</rollingPolicy>
         　　　　　　　　　　　　<encoder>
-        　　　　　　　　　　　　　　<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{wwdzUserId}] [traceId:%X{wwdzTraceId}] %logger{50} - %msg%n</pattern>
+        　　　　　　　　　　　　　　<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{aspenUserId}] [traceId:%X{aspenTraceId}] %logger{50} - %msg%n</pattern>
         　　　　　　　　　　　　</encoder>
     </appender>
 
@@ -44,7 +44,7 @@
         　　　　　　　　　　　　　　<maxHistory>5</maxHistory>
         　　　　　　　　　　　　</rollingPolicy>
         　　　　　　　　　　　　<encoder>
-        　　　　　　　　　　　　　　<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{wwdzUserId}] [traceId:%X{wwdzTraceId}] %logger{50} - %msg%n</pattern>
+        　　　　　　　　　　　　　　<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [userId:%X{aspenUserId}] [traceId:%X{aspenTraceId}] %logger{50} - %msg%n</pattern>
         　　　　　　　　　　　　</encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印错误日志 -->
             <level>ERROR</level>
