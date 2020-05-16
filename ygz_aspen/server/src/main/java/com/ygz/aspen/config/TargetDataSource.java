@@ -1,4 +1,4 @@
-package com.ygz.aspen.config;//package com.wwdz.mall.dalConfig.source;
+package com.ygz.aspen.config;
 
 import java.lang.annotation.*;
 
