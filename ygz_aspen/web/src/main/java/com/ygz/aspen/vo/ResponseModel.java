@@ -1,25 +1,22 @@
 package com.ygz.aspen.vo;
 
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletResponse;
+import lombok.Data;
 import java.io.Serializable;
 
-
+@Data
 public class ResponseModel<T> implements Serializable {
     private static final long serialVersionUID = -1241360949457314497L;
-    private T result;
+    private T data;
     private String message;
     private Integer code;
 
     public ResponseModel() {
     }
 
-    public ResponseModel(Integer code, String message, T res){
+    public ResponseModel(Integer code, String message, T data){
         this.message = message;
         this.code = code;
-        this.result = res;
+        this.data = data;
     }
 
     public ResponseModel(ResultMsgEnum resultMsgEnum){
@@ -27,37 +24,11 @@ public class ResponseModel<T> implements Serializable {
         this.message = resultMsgEnum.getMessage();
     }
 
-    public ResponseModel(T result){
-        this.result = result;
+    public ResponseModel(T data){
+        this.data = data;
         this.code = ResultMsgEnum.SUCCESS.getCode();
         this.message = ResultMsgEnum.SUCCESS.getMessage();
     }
 
-    public String getMessage() {
-        return this.message;
-    }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getResult() {
-        return this.result;
-    }
-
-    public void setResult(T result) {
-        this.result = result;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String toString() {
-        return "ResponseModel [result=" + this.result +  ", message=" + this.message + ", code=" + this.code + "]";
-    }
 }

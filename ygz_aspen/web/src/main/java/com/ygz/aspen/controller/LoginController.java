@@ -23,7 +23,7 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseModel<LoginResultVO> login(@RequestBody DoLoginVO loginVO){
         if(loginVO == null || StringUtils.isEmpty(loginVO.getUname())
-                || StringUtils.isEmpty(loginVO.getPassword()) || StringUtils.isEmpty(loginVO.getVerificationCode())){
+                || StringUtils.isEmpty(loginVO.getPassword())){
             return new ResponseModel<>(ResultMsgEnum.PARAM_ERROR);
         }
         User user = userService.getUserByUname(loginVO.getUname());
@@ -31,7 +31,7 @@ public class LoginController {
             if(user.getPassword().equals(loginVO.getPassword())){
                 String token = JWTUtil.sign(user.getUname(), user.getPassword());
                 LoginResultVO loginResultVO = new LoginResultVO();
-                loginResultVO.setAuthorization(token);
+                loginResultVO.setToken(token);
                 loginResultVO.setUname(user.getUname());
                 loginResultVO.setUnick(user.getUnick());
                 loginResultVO.setUserId(user.getUserId());

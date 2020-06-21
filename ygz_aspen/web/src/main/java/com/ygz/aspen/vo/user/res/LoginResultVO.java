@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class LoginResultVO {
 
-    private String authorization;
+    private String token;
 
     private String uname;
 
