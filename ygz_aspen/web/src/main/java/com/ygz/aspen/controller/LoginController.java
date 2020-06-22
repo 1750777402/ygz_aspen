@@ -2,6 +2,7 @@ package com.ygz.aspen.controller;
 
 import com.ygz.aspen.annotation.Pass;
 import com.ygz.aspen.config.shiro.JWTUtil;
+import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.service.sys.UserService;
 import com.ygz.aspen.vo.ResponseModel;
@@ -42,4 +43,9 @@ public class LoginController {
     }
 
 
+    @PostMapping("/logout")
+    public ResponseModel<LoginResultVO> logout(){
+        User user = AspenContextHolder.get().getUser();
+        return new ResponseModel<>();
+    }
 }
