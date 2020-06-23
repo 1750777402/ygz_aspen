@@ -74,7 +74,7 @@
 </template>
 
 <script>
-
+import store from '../../store'
 export default {
   name: 'Login',
   // components: {  },
@@ -155,7 +155,9 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
+            .then(async() => {
+              const accessRoutes = await store.dispatch('permission/generateRoutes')
+              console.log(accessRoutes)
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
