@@ -25,6 +25,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_ROUTERS: (state, routers) => {
+    state.routers = routers
   }
 }
 
@@ -35,6 +38,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ uname: username.trim(), password: password }).then(response => {
         const { data } = response
+        debugger
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()

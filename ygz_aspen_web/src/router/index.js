@@ -8,7 +8,6 @@ import Layout from '@/layout'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
  *
  * hidden: true                   if set true, item will not show in the sidebar(default is false)
  * alwaysShow: true               if set true, will always show the root menu
@@ -68,6 +67,7 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    affix: true,
     children: [
       {
         path: 'dashboard',
@@ -85,7 +85,41 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  },
+  {
+    path: '/sys',
+    component: Layout,
+    redirect: '/sys/user',
+    name: '系统管理',
+    meta: {
+      title: '系统管理',
+      icon: 'system'
+    },
+    children: [
+      {
+        path: 'user',
+        component: () => import('@/views/sys/user/index'),
+        name: '用户中心',
+        meta: { title: '用户中心', icon: 'user' }
+      },
+      {
+        path: 'menu',
+        component: () => import('@/views/sys/menu/index'),
+        name: '菜单管理',
+        meta: { title: '菜单管理', icon: 'table' }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/sys/role/index'),
+        name: '角色管理',
+        meta: { title: '角色管理', icon: 'user' }
+      }
+    ]
+  }
 ]
 
 const createRouter = () => new Router({

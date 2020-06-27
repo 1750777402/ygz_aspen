@@ -1,5 +1,5 @@
 import router from './router'
-// import store from './store'
+import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
@@ -27,9 +27,8 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       try {
-        // router.addRoutes(null)
+        await store.dispatch('permission/generateRoutes')
         next()
-        // next({ ...to, replace: true })
       } catch (error) {
         // remove token and go to login page to re-login
         // await store.dispatch('user/resetToken')
