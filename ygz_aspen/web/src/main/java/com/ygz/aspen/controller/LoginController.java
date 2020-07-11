@@ -28,11 +28,11 @@ public class LoginController {
     @Pass
     @PostMapping("/login")
     public ResponseModel<LoginResultVO> login(@RequestBody DoLoginVO loginVO){
-        if(loginVO == null || StringUtils.isEmpty(loginVO.getUname())
+        if(loginVO == null || StringUtils.isEmpty(loginVO.getUsername())
                 || StringUtils.isEmpty(loginVO.getPassword())){
             return new ResponseModel<>(ResultMsgEnum.PARAM_ERROR);
         }
-        User user = userService.getUserByUname(loginVO.getUname());
+        User user = userService.getUserByUname(loginVO.getUsername());
         if(user != null){
             if(user.getPassword().equals(loginVO.getPassword())){
                 String token = JWTUtil.sign(user.getUname(), user.getPassword());
@@ -41,7 +41,6 @@ public class LoginController {
                 loginResultVO.setUname(user.getUname());
                 loginResultVO.setUnick(user.getUnick());
                 loginResultVO.setUserId(user.getUserId());
-                loginResultVO.setUserMenuVO(getUserMenuVO());
                 return new ResponseModel<>(loginResultVO);
             }
         }
@@ -55,24 +54,5 @@ public class LoginController {
         return new ResponseModel<>();
     }
 
-    private List<UserMenuVO> getUserMenuVO(){
-        List<UserMenuVO> userMenuVOList = new ArrayList<>();
-        UserMenuVO userMenuVO = new UserMenuVO();
-        userMenuVO.setMenuLevel(1);
-        userMenuVO.setName("商品中心");
-        userMenuVO.setPath("/item");
-        userMenuVO.setRedirect("/item/list");
-        userMenuVO.setMeatInfo(new MenuMeatVO("商品中心", "el-icon-s-goods"));
-        List<UserMenuVO> menuChildrenList = new ArrayList<>();
-        UserMenuVO menuChildren = new UserMenuVO();
-        menuChildren.setPath("/list");
-        menuChildren.setMenuLevel(2);
-        menuChildren.setName("商品列表");
-        menuChildren.setMeatInfo(new MenuMeatVO("商品列表","el-icon-s-goods"));
-        menuChildren.setComponent("@/views/item/list/index");
-        menuChildrenList.add(menuChildren);
-        userMenuVO.setChildrenList(menuChildrenList);
-        userMenuVOList.add(userMenuVO);
-        return userMenuVOList;
-    }
+
 }

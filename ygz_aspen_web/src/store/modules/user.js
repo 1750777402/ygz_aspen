@@ -45,8 +45,8 @@ const user = {
       const rememberMe = userInfo.rememberMe
       return new Promise((resolve, reject) => {
         login(username, password).then(res => {
-          setToken(res.detail.token, rememberMe)
-          commit('SET_TOKEN', res.detail.token)
+          setToken(res.data.token, rememberMe)
+          commit('SET_TOKEN', res.data.token)
           resolve()
         }).catch(error => {
           reject(error)
@@ -58,12 +58,11 @@ const user = {
     GetInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
-          commit('SET_ID', res.detail.id)
-          commit('SET_ROLES', res.detail.roles)
-          commit('SET_NAME', res.detail.username)
-          commit('SET_AVATAR', res.detail.avatar)
-          commit('SET_EMAIL', res.detail.email)
-          commit('SET_CREATE_TIME', parseTime(res.detail.createTime))
+          commit('SET_ID', res.data.id)
+          commit('SET_ROLES', res.data.roles)
+          commit('SET_NAME', res.data.username)
+          commit('SET_AVATAR', res.data.avatar)
+          commit('SET_CREATE_TIME', parseTime(res.data.createTime))
           resolve(res)
         }).catch(error => {
           reject(error)

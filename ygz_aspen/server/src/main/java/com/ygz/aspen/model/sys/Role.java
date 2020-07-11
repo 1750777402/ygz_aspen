@@ -21,8 +21,8 @@ public class Role extends BaseModel {
     private String roleName;
 
     /**
-     * 角色类型
+     * 角色code
      */
-    private Integer roleType;
+    private String roleCode;
 
 }

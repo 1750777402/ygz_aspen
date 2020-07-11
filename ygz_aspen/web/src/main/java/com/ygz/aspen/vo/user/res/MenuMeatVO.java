@@ -14,9 +14,6 @@ public class MenuMeatVO {
     @ApiModelProperty("菜单图标")
     private String icon;
 
-    @ApiModelProperty("是否固定在tags-view中")
-    private Boolean affix = false;
-
     public MenuMeatVO() {
     }
 

@@ -7,6 +7,7 @@
         <id column="uname" property="uname" jdbcType="VARCHAR"/>
         <id column="unick" property="unick" jdbcType="VARCHAR"/>
         <id column="password" property="password" jdbcType="VARCHAR"/>
+        <id column="avatar" property="avatar" jdbcType="VARCHAR"/>
         <id column="isDeleted" property="isDeleted" jdbcType="TINYINT"/>
         <id column="created" property="created" jdbcType="BIGINT"/>
         <id column="updated" property="updated" jdbcType="BIGINT"/>
@@ -49,11 +50,12 @@
 
     <insert id="addUser" parameterType="com.ygz.aspen.model.sys.User" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO
-            `user`(`uname`, `unick`, `password`, `isDeleted` `createTime`, `updateTime`)
+            `user`(`uname`, `unick`, `password`, `avatar`, `isDeleted` `created`, `updated`)
         VALUES
             (#{uname,jdbcType=VARCHAR},
              #{unick,jdbcType=VARCHAR},
              #{password,jdbcType=VARCHAR},
+             #{avatar,jdbcType=VARCHAR},
              #{isDeleted,jdbcType=TINYINT},
              #{created,jdbcType=BIGINT},
              #{updated,jdbcType=BIGINT})

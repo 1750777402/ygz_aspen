@@ -104,7 +104,7 @@ public class MyRealm extends AuthorizingRealm {
         if (user == null) {
             throw new UnauthorizedException("User didn't existed!");
         }
-        if (!JWTUtil.verify(token, uname, user.getPassword())) {
+        if (!JWTUtil.verify(token.replace(JWTUtil.tokenPrefix, ""), uname, user.getPassword())) {
             throw new UnauthorizedException("Username or password error");
         }
         return new SimpleAuthenticationInfo(user, token, this.getName());

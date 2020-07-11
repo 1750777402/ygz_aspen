@@ -9,7 +9,7 @@ import lombok.Data;
 public class DoLoginVO {
 
     @ApiModelProperty("用户名")
-    private String uname;
+    private String username;
 
     @ApiModelProperty("密码")
     private String password;

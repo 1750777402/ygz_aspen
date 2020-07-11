@@ -26,4 +26,9 @@ public class User extends BaseModel {
      */
     private String password;
 
+    /**
+     * 用户头像
+     */
+    private String avatar;
+
 }

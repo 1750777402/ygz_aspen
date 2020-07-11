@@ -5,12 +5,14 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 public class JWTUtil {
 
+    public static final String tokenPrefix = "Aspen ";
 
     // 过期时间1天
     private static final long EXPIRE_TIME = 24*60*60*1000;
@@ -40,7 +42,10 @@ public class JWTUtil {
      */
     public static String getUname(String token) {
         try {
-            DecodedJWT jwt = JWT.decode(token);
+            if(StringUtils.isEmpty(token) || !token.startsWith(tokenPrefix)){
+                return null;
+            }
+            DecodedJWT jwt = JWT.decode(token.replace(tokenPrefix, ""));
             return jwt.getClaim("uname").asString();
         } catch (JWTDecodeException e) {
             return null;
