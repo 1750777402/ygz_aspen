@@ -70,7 +70,7 @@ export default {
     // 导出
     getOrgUserTree() {
       getOrganizationUserTree().then(res => {
-        this.orgusers = res.detail
+        this.orgusers = res.data
       })
     },
     download() {

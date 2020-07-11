@@ -98,7 +98,7 @@ export default {
     },
     getOrganizations() {
       getOrganizationTree().then(res => {
-        this.organizations = res.detail
+        this.organizations = res.data
       })
     }
   }

@@ -117,7 +117,7 @@ export default {
     },
     getMenus() {
       getMenuTree().then(res => {
-        this.menus = res.detail
+        this.menus = res.data
       })
     }
   }

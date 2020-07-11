@@ -203,14 +203,14 @@ export default {
     getMenus() {
       if (Array.isArray(this.menu_list) && this.menu_list.length === 0) {
         getMenuTree().then(res => {
-          this.menu_list = res.detail
+          this.menu_list = res.data
         })
       }
     },
     getPermissions() {
       if (Array.isArray(this.permission_list) && this.permission_list.length === 0) {
         getPermissionTree().then(res => {
-          this.permission_list = res.detail
+          this.permission_list = res.data
         })
       }
     }
