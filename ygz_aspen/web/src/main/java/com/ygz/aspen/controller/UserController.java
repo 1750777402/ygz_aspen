@@ -71,7 +71,7 @@ public class UserController {
         menus.forEach(menu -> {
             UserMenuVO userMenuVO = getUserMenuVO(menu);
             if(userMenuVO != null){
-                menuMap.put(userMenuVO.getMenuId(), userMenuVO);
+                menuMap.put(userMenuVO.getId(), userMenuVO);
             }
         });
         menuMap.forEach((menuId, userMenuVO) -> {
@@ -101,7 +101,7 @@ public class UserController {
             return null;
         }
         UserMenuVO menuVO = new UserMenuVO();
-        menuVO.setMenuId(menu.getMenuId());
+        menuVO.setId(menu.getMenuId());
         menuVO.setSort(menu.getSort());
         menuVO.setName(menu.getName());
         menuVO.setPath(menu.getPath());

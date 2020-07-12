@@ -11,7 +11,7 @@ import java.util.List;
 public class UserMenuVO {
 
     @ApiModelProperty("菜单id")
-    private Long menuId;
+    private Long id;
 
     @ApiModelProperty("菜单排序")
     private Integer sort;
