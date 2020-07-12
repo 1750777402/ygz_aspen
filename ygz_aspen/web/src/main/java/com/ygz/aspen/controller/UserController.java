@@ -50,21 +50,40 @@ public class UserController {
     private List<UserMenuVO> getUserMenuVO(){
         List<UserMenuVO> userMenuVOList = new ArrayList<>();
         UserMenuVO userMenuVO = new UserMenuVO();
-        userMenuVO.setSort(1);
-        userMenuVO.setName("商品中心");
-        userMenuVO.setPath("/item");
-        userMenuVO.setRedirect("/item/list");
+        userMenuVO.setSort(0);
+        userMenuVO.setName("系统管理");
+        userMenuVO.setPath("/system");
+        userMenuVO.setRedirect("noredirect");
         userMenuVO.setComponent("Layout");
-        userMenuVO.setMeta(new MenuMeatVO("商品中心", "el-icon-s-goods"));
+        userMenuVO.setAlwaysShow(true);
+        userMenuVO.setMeta(new MenuMeatVO("系统管理", "system"));
         List<UserMenuVO> menuChildrenList = new ArrayList<>();
-        UserMenuVO menuChildren = new UserMenuVO();
-        menuChildren.setPath("/list");
-        menuChildren.setSort(2);
-        menuChildren.setName("商品列表");
-        menuChildren.setMeta(new MenuMeatVO("商品列表","el-icon-s-goods"));
-        menuChildren.setComponent("item/list/index");
-        menuChildrenList.add(menuChildren);
-        userMenuVO.setChildrenList(menuChildrenList);
+
+        UserMenuVO userMenu = new UserMenuVO();
+        userMenu.setPath("users");
+        userMenu.setSort(2);
+        userMenu.setName("用户管理");
+        userMenu.setMeta(new MenuMeatVO("用户管理","user"));
+        userMenu.setComponent("system/user/index");
+        menuChildrenList.add(userMenu);
+
+        UserMenuVO menuMenu = new UserMenuVO();
+        menuMenu.setPath("menus");
+        menuMenu.setSort(3);
+        menuMenu.setName("菜单管理");
+        menuMenu.setMeta(new MenuMeatVO("菜单管理","caidan"));
+        menuMenu.setComponent("system/menu/index");
+        menuChildrenList.add(menuMenu);
+
+        UserMenuVO roleMenu = new UserMenuVO();
+        roleMenu.setPath("roles");
+        roleMenu.setSort(4);
+        roleMenu.setName("角色管理");
+        roleMenu.setMeta(new MenuMeatVO("角色管理","role"));
+        roleMenu.setComponent("system/role/index");
+        menuChildrenList.add(roleMenu);
+
+        userMenuVO.setChildren(menuChildrenList);
         userMenuVOList.add(userMenuVO);
         return userMenuVOList;
     }

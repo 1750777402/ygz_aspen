@@ -32,6 +32,6 @@ public class UserMenuVO {
     private MenuMeatVO meta;
 
     @ApiModelProperty("子组件列表")
-    private List<UserMenuVO> childrenList;
+    private List<UserMenuVO> children;
 
 }
