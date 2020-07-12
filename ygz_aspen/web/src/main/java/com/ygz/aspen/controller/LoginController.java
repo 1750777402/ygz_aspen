@@ -9,14 +9,9 @@ import com.ygz.aspen.vo.ResponseModel;
 import com.ygz.aspen.vo.ResultMsgEnum;
 import com.ygz.aspen.vo.user.req.DoLoginVO;
 import com.ygz.aspen.vo.user.res.LoginResultVO;
-import com.ygz.aspen.vo.user.res.MenuMeatVO;
-import com.ygz.aspen.vo.user.res.UserMenuVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/")

@@ -60,29 +60,28 @@ public class MyRealm extends AuthorizingRealm {
         }
 
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        List<String> permissions = new ArrayList<>();
+//        List<String> permissions = new ArrayList<>();
 
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         List<Role> roles = roleService.selectUserRoleByUserId(user.getUserId());
         if(CollectionUtils.isNotEmpty(roles)){
-          //添加控制角色级别的权限
-//        Set<String> roleNameSet = new HashSet<>();
-//        roleNameSet.add(role.getRoleName());
-//        simpleAuthorizationInfo.addRoles(roleNameSet);
+            //添加控制角色级别的权限
+            Set<String> roleNameSet = roles.stream().map(role -> role.getRoleCode()).collect(Collectors.toSet());
+            simpleAuthorizationInfo.addRoles(roleNameSet);
 
             //控制菜单级别按钮  类中用@RequiresPermissions("user:list") 对应数据库中code字段来控制controller
-            List<Long> roleIds = roles.stream().map(role -> role.getRoleId()).collect(Collectors.toList());
-            List<Menu> menuList = menuService.selectMenuByRoleIds(roleIds);
-            if(CollectionUtils.isNotEmpty(menuList)){
-                menuList.forEach(menu -> {
-                    if (StringUtils.isNoneEmpty(menu.getMenuPermission())) {
-                        permissions.add(menu.getMenuPermission());
-                    }
-                });
-            }
+//            List<Long> roleIds = roles.stream().map(role -> role.getRoleId()).collect(Collectors.toList());
+//            List<Menu> menuList = menuService.selectMenuByRoleIds(roleIds);
+//            if(CollectionUtils.isNotEmpty(menuList)){
+//                menuList.forEach(menu -> {
+//                    if (StringUtils.isNoneEmpty(menu.getMenuPermission())) {
+//                        permissions.add(menu.getMenuPermission());
+//                    }
+//                });
+//            }
+//            Set<String> permission = new HashSet<>(permissions);
+//            simpleAuthorizationInfo.addStringPermissions(permission);
         }
-        Set<String> permission = new HashSet<>(permissions);
-        simpleAuthorizationInfo.addStringPermissions(permission);
         return simpleAuthorizationInfo;
     }
 

@@ -14,6 +14,12 @@ public class MenuMeatVO {
     @ApiModelProperty("菜单图标")
     private String icon;
 
+    @ApiModelProperty("是否被 <keep-alive> 缓存")
+    private Boolean noCache = false;
+
+    @ApiModelProperty(" 若果设置为true，它则会固定在tags-view中(默认 false)")
+    private Boolean affix = false;
+
     public MenuMeatVO() {
     }
 

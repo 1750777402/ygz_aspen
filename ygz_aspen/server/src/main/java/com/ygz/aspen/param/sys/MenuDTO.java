@@ -16,28 +16,15 @@ public class MenuDTO extends BaseQueryParam {
     /**
      * 菜单名称
      */
-    private String menuName;
-
-    /**
-     * 菜单url
-     */
-    private String menuUrl;
-
-    /**
-     * 菜单权限
-     */
-    private String menuPermission;
-
-    /**
-     * 菜单等级
-     */
-    private Integer menuLevel;
+    private String name;
 
     /**
      * 父级菜单id
      */
-    private Long menuParentId;
+    private Long parentId;
 
     private List<Long> menuIds;
+
+    private List<Long> parentIds;
 
 }

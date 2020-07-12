@@ -4,16 +4,34 @@
 
     <resultMap id="BaseResultMap" type="com.ygz.aspen.model.sys.Menu">
         <id column="menuId" property="menuId" jdbcType="BIGINT"/>
-        <id column="menuName" property="menuName" jdbcType="VARCHAR"/>
-        <id column="menuUrl" property="menuUrl" jdbcType="VARCHAR"/>
-        <id column="menuPermission" property="menuPermission" jdbcType="VARCHAR"/>
-        <id column="menuLevel" property="menuLevel" jdbcType="INTEGER"/>
-        <id column="menuParentId" property="menuParentId" jdbcType="BIGINT"/>
-        <id column="menuIcon" property="menuIcon" jdbcType="VARCHAR"/>
+        <id column="name" property="name" jdbcType="VARCHAR"/>
+        <id column="parentId" property="parentId" jdbcType="BIGINT"/>
+        <id column="sort" property="sort" jdbcType="INTEGER"/>
+        <id column="icon" property="icon" jdbcType="VARCHAR"/>
+        <id column="hidden" property="hidden" jdbcType="TINYINT"/>
+        <id column="path" property="path" jdbcType="VARCHAR"/>
+        <id column="component" property="component" jdbcType="VARCHAR"/>
         <id column="isDeleted" property="isDeleted" jdbcType="TINYINT"/>
         <id column="created" property="created" jdbcType="BIGINT"/>
         <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
+
+    <insert id="addMenu" parameterType="com.ygz.aspen.model.sys.Menu" useGeneratedKeys="true" keyProperty="menuId">
+        INSERT INTO
+            `menu`(`name`, `parentId`, `sort`, `icon`, `hidden`
+            , `path`, `component`, `isDeleted`, `created`, `updated`)
+        VALUES
+            (#{name,jdbcType=VARCHAR},
+             #{parentId,jdbcType=BIGINT},
+             #{sort,jdbcType=INTEGER},
+             #{icon,jdbcType=VARCHAR},
+             #{hidden,jdbcType=TINYINT},
+             #{path,jdbcType=VARCHAR},
+             #{component,jdbcType=VARCHAR},
+             #{isDeleted,jdbcType=TINYINT},
+             #{created,jdbcType=BIGINT},
+             #{updated,jdbcType=BIGINT})
+    </insert>
 
     <select id="selectMenuById" resultMap="BaseResultMap">
         select * from `Menu` where menuId = #{menuId,jdbcType=BIGINT}
@@ -22,22 +40,22 @@
     <select id="selectMenuList" resultType="com.ygz.aspen.model.sys.Menu">
         select * from `Menu`
         where 1=1
-        <if test="menuName != null">
-            and menuName = #{menuName, jdbcType=VARCHAR}
+        <if test="name != null">
+            and `name` = #{name, jdbcType=VARCHAR}
         </if>
-        <if test="menuPermission != null">
-            and menuPermission = #{menuPermission, jdbcType=VARCHAR}
-        </if>
-        <if test="menuLevel != null">
-            and menuLevel = #{menuLevel, jdbcType=INTEGER}
-        </if>
-        <if test="menuParentId != null">
-            and menuParentId = #{menuParentId, jdbcType=BIGINT}
+        <if test="parentId != null">
+            and parentId = #{parentId, jdbcType=BIGINT}
         </if>
         <if test="menuIds != null">
             and menuId in
             <foreach collection="menuIds" open="(" separator="," close=")" item="mId">
                 #{mId}
+            </foreach>
+        </if>
+        <if test="parentIds != null">
+            and parentId in
+            <foreach collection="parentIds" open="(" separator="," close=")" item="pId">
+                #{pId}
             </foreach>
         </if>
         <if test="isDeleted != null">
@@ -50,23 +68,6 @@
             limit #{pageIndex}, #{pageSize}
         </if>
     </select>
-
-
-    <insert id="addMenu" parameterType="com.ygz.aspen.model.sys.Menu" useGeneratedKeys="true" keyProperty="menuId">
-        INSERT INTO
-            `menu`(`menuName`, `menuUrl`, `menuPermission`, `menuLevel`, `menuParentId`
-            , `menuIcon`, `isDeleted`, `created`, `updated`)
-        VALUES
-            (#{menuName,jdbcType=VARCHAR},
-             #{menuUrl,jdbcType=VARCHAR},
-             #{menuPermission,jdbcType=VARCHAR},
-             #{menuLevel,jdbcType=INTEGER},
-             #{menuParentId,jdbcType=BIGINT},
-             #{menuIcon,jdbcType=VARCHAR},
-             #{isDeleted,jdbcType=TINYINT},
-             #{created,jdbcType=BIGINT},
-             #{updated,jdbcType=BIGINT})
-    </insert>
 
 
 </mapper>

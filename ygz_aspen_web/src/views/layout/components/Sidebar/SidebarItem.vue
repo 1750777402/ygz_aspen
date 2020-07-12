@@ -1,7 +1,7 @@
 <template>
   <div v-if="!item.hidden&&item.children" class="menu-wrapper">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-      <div style="background-color: #212529;">
+      <div style="background-color: #FFFFFF;">
         <img :src="logo" style="height:50px;"/>
       </div>
       <app-link :to="resolvePath(onlyOneChild.path)">
@@ -111,9 +111,9 @@ export default {
     },
     initLogo() {
       if (this.sidebar.opened) {
-        this.logo = require('../../../../assets/logo/logo1.png')
+        this.logo = require('../../../../assets/logo/2200_450.png')
       } else {
-        this.logo = require('../../../../assets/logo/logo2.png')
+        this.logo = require('../../../../assets/logo/logo450.png')
       }
     }
   }

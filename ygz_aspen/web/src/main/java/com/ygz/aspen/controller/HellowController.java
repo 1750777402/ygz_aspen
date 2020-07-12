@@ -6,6 +6,7 @@ import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.service.RedisService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class HellowController {
         return user.getUname();
     }
 
-    @RequiresPermissions("user:test")
+    @RequiresRoles("admin")
     @GetMapping("/test2")
     public String test2(){
         User user = AspenContextHolder.get().getUser();

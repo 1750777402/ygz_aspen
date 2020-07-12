@@ -52,7 +52,7 @@ public class MenuServiceImpl implements MenuService {
         }
         List<RoleMenu> roleMenus = roleMenuMapper.selectRoleMenuByRoleIds(roleIds);
         if(CollectionUtils.isNotEmpty(roleMenus)){
-            List<Long> menuIds = roleMenus.stream().map(roleMenu -> roleMenu.getMenuId()).collect(Collectors.toList());
+            List<Long> menuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
             MenuDTO dto = new MenuDTO();
             dto.setMenuIds(menuIds);
             dto.setIsDeleted(0);

@@ -18,36 +18,37 @@ public class Menu extends BaseModel {
     /**
      * 菜单名称
      */
-    private String menuName;
-
-    /**
-     * 菜单url
-     */
-    private String menuUrl;
-
-    /**
-     * 菜单权限
-     */
-    private String menuPermission;
-
-    /**
-     * 菜单等级
-     */
-    private Integer menuLevel;
+    private String name;
 
     /**
      * 父级菜单id
      */
-    private Long menuParentId;
+    private Long parentId;
 
     /**
      * 菜单排序
      */
-    private Integer menuSort;
+    private Integer sort;
 
     /**
      * 菜单图标
      */
-    private String menuIcon;
+    private String icon;
+
+    /**
+     * 是否显示  0-false不显示  1-true 显示
+     */
+    private Integer hidden;
+
+    /**
+     * 组件地址 /user
+     */
+    private String path;
+
+    /**
+     * 组件路径 @/views/system/user/center
+     */
+    private String component;
+
 
 }
