@@ -28,7 +28,7 @@ public class HellowController {
     public String test1(){
         User user = AspenContextHolder.get().getUser();
         AspenContextHolder.get().getUser();
-        return user.getUname();
+        return user.getUsername();
     }
 
     @RequiresRoles("admin")
@@ -36,7 +36,7 @@ public class HellowController {
     public String test2(){
         User user = AspenContextHolder.get().getUser();
         AspenContextHolder.get().getUser();
-        return user.getUname();
+        return user.getUsername();
     }
 
     @AccessLimit(perSecond=0.3)

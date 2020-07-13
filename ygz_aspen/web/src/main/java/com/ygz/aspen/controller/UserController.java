@@ -4,17 +4,20 @@ import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.model.sys.User;
+import com.ygz.aspen.param.sys.UserDTO;
 import com.ygz.aspen.service.sys.MenuService;
 import com.ygz.aspen.service.sys.RoleService;
+import com.ygz.aspen.service.sys.UserService;
 import com.ygz.aspen.vo.ResponseModel;
 import com.ygz.aspen.vo.user.res.MenuMeatVO;
 import com.ygz.aspen.vo.user.res.UserInfoVO;
 import com.ygz.aspen.vo.user.res.UserMenuVO;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.shiro.authc.Account;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -26,6 +29,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private RoleService roleService;
@@ -40,7 +46,7 @@ public class UserController {
         UserInfoVO vo = new UserInfoVO();
         vo.setAvatar(user.getAvatar());
         vo.setId(user.getUserId());
-        vo.setUsername(user.getUname());
+        vo.setUsername(user.getUsername());
         List<String> roleArr = new ArrayList<>();
         List<Role> roles = roleService.selectUserRoleByUserId(user.getUserId());
         if(CollectionUtils.isNotEmpty(roles)){
@@ -60,6 +66,39 @@ public class UserController {
         List<Long> roleIds = roles.stream().map(Role::getRoleId).collect(Collectors.toList());
         List<Menu> menus = menuService.selectMenuByRoleIds(roleIds);
         return new ResponseModel<>(assembleMenuVO(menus));
+    }
+
+    @GetMapping("/list")
+    @RequiresRoles("admin")
+    public ResponseModel<List<UserInfoVO>> list(@RequestParam("pageIndex") Integer pageIndex,
+                                                @RequestParam("pageSize") Integer pageSize){
+        List<UserInfoVO> userList = new ArrayList<>();
+        UserDTO userDTO = new UserDTO();
+        userDTO.setPageIndex(pageIndex);
+        userDTO.setPageSize(pageSize);
+        List<User> users = userService.selectUserList(userDTO);
+        if(CollectionUtils.isNotEmpty(users)){
+//            List<Long> userIds = users.stream().map(User::getUserId).collect(Collectors.toList());
+//            roleService.
+            users.forEach(user -> userList.add(toUserInfoVO(user)));
+        }
+        return new ResponseModel<>(userList);
+    }
+
+    private UserInfoVO toUserInfoVO(User user){
+        if(user == null){
+            return null;
+        }
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setUsername(user.getUsername());
+        userInfoVO.setId(user.getUserId());
+        userInfoVO.setAvatar(user.getAvatar());
+        userInfoVO.setPhone(user.getPhone());
+        userInfoVO.setUsernick(user.getUsernick());
+        userInfoVO.setRoleName("系统管理员");
+        userInfoVO.setRoleId(1L);
+        userInfoVO.setIsDeleted(user.getIsDeleted() == 0);
+        return userInfoVO;
     }
 
     private List<UserMenuVO> assembleMenuVO(List<Menu> menus){

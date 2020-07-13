@@ -30,11 +30,11 @@ public class LoginController {
         User user = userService.getUserByUname(loginVO.getUsername());
         if(user != null){
             if(user.getPassword().equals(loginVO.getPassword())){
-                String token = JWTUtil.sign(user.getUname(), user.getPassword());
+                String token = JWTUtil.sign(user.getUsername(), user.getPassword());
                 LoginResultVO loginResultVO = new LoginResultVO();
                 loginResultVO.setToken(token);
-                loginResultVO.setUname(user.getUname());
-                loginResultVO.setUnick(user.getUnick());
+                loginResultVO.setUname(user.getUsername());
+                loginResultVO.setUnick(user.getUsernick());
                 loginResultVO.setUserId(user.getUserId());
                 return new ResponseModel<>(loginResultVO);
             }

@@ -14,12 +14,12 @@ public class User extends BaseModel {
     /**
      * 用户名
      */
-    private String uname;
+    private String username;
 
     /**
      * 用户昵称
      */
-    private String unick;
+    private String usernick;
 
     /**
      * 用户密码
@@ -30,5 +30,10 @@ public class User extends BaseModel {
      * 用户头像
      */
     private String avatar;
+
+    /**
+     * 手机号
+     */
+    private String phone;
 
 }

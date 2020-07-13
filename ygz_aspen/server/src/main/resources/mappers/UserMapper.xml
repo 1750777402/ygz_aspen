@@ -4,31 +4,49 @@
 
     <resultMap id="BaseResultMap" type="com.ygz.aspen.model.sys.User">
         <id column="userId" property="userId" jdbcType="BIGINT"/>
-        <id column="uname" property="uname" jdbcType="VARCHAR"/>
-        <id column="unick" property="unick" jdbcType="VARCHAR"/>
+        <id column="username" property="username" jdbcType="VARCHAR"/>
+        <id column="usernick" property="usernick" jdbcType="VARCHAR"/>
         <id column="password" property="password" jdbcType="VARCHAR"/>
         <id column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <id column="phone" property="phone" jdbcType="VARCHAR"/>
         <id column="isDeleted" property="isDeleted" jdbcType="TINYINT"/>
         <id column="created" property="created" jdbcType="BIGINT"/>
         <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
-    
+
+    <insert id="addUser" parameterType="com.ygz.aspen.model.sys.User" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO
+            `user`(`username`, `usernick`, `password`, `avatar`, `phone`, `isDeleted`, `created`, `updated`)
+        VALUES
+            (#{username,jdbcType=VARCHAR},
+             #{usernick,jdbcType=VARCHAR},
+             #{password,jdbcType=VARCHAR},
+             #{avatar,jdbcType=VARCHAR},
+             #{phone,jdbcType=VARCHAR},
+             #{isDeleted,jdbcType=TINYINT},
+             #{created,jdbcType=BIGINT},
+             #{updated,jdbcType=BIGINT})
+    </insert>
+
     <select id="getUserById" resultType="com.ygz.aspen.model.sys.User">
         select * from `User` where userId = #{userId,jdbcType=BIGINT}
     </select>
 
     <select id="getUserByUname" resultType="com.ygz.aspen.model.sys.User">
-        select * from `User` where uname = #{uname,jdbcType=VARCHAR}
+        select * from `User` where username = #{username,jdbcType=VARCHAR}
     </select>
 
     <select id="selectUserList" resultType="com.ygz.aspen.model.sys.User">
         select * from `User`
         where 1=1
-        <if test="uname != null">
-            and uname = #{uname, jdbcType=VARCHAR}
+        <if test="username != null">
+            and username = #{username, jdbcType=VARCHAR}
         </if>
-        <if test="unick != null">
-            and unick = #{unick, jdbcType=VARCHAR}
+        <if test="usernick != null">
+            and usernick = #{usernick, jdbcType=VARCHAR}
+        </if>
+        <if test="phone != null">
+            and phone = #{phone, jdbcType=VARCHAR}
         </if>
         <if test="isDeleted != null">
             and isDeleted = #{isDeleted, jdbcType=TINYINT}
@@ -46,20 +64,6 @@
             limit #{pageIndex}, #{pageSize}
         </if>
     </select>
-
-
-    <insert id="addUser" parameterType="com.ygz.aspen.model.sys.User" useGeneratedKeys="true" keyProperty="userId">
-        INSERT INTO
-            `user`(`uname`, `unick`, `password`, `avatar`, `isDeleted` `created`, `updated`)
-        VALUES
-            (#{uname,jdbcType=VARCHAR},
-             #{unick,jdbcType=VARCHAR},
-             #{password,jdbcType=VARCHAR},
-             #{avatar,jdbcType=VARCHAR},
-             #{isDeleted,jdbcType=TINYINT},
-             #{created,jdbcType=BIGINT},
-             #{updated,jdbcType=BIGINT})
-    </insert>
 
 
 </mapper>

@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
             const asyncRouter = filterAsyncRouter(res.data)
             store.dispatch('GenerateRoutes', asyncRouter).then(() => { // 存储路由
               router.addRoutes(asyncRouter) // 动态添加可访问路由表
-              router.addRoutes({ path: '*', redirect: '/404', hidden: true })
+              router.addRoutes([{ path: '*', redirect: '/404', hidden: true }])
               next({ ...to, replace: true })// hack方法 确保addRoutes已完成
             })
           })
