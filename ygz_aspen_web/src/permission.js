@@ -22,9 +22,9 @@ router.beforeEach((to, from, next) => {
         store.dispatch('GetInfo').then(res => { // 拉取user_info
           buildMenus().then(res => {
             const asyncRouter = filterAsyncRouter(res.data)
-            asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
             store.dispatch('GenerateRoutes', asyncRouter).then(() => { // 存储路由
               router.addRoutes(asyncRouter) // 动态添加可访问路由表
+              router.addRoutes({ path: '*', redirect: '/404', hidden: true })
               next({ ...to, replace: true })// hack方法 确保addRoutes已完成
             })
           })
