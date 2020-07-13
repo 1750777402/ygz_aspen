@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <eHeader :roles="roles" :organizations="organizations" :query="query"/>
+    <!-- <eHeader :users="users" :organizations="organizations" :query="query"/> -->
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" border style="width: 100%;">
       <el-table-column label="头像" width="50px">
@@ -9,19 +9,17 @@
         </template>
       </el-table-column>
       <el-table-column prop="username" label="用户名" width="150px"/>
-      <el-table-column prop="name" label="姓名" width="100px"/>
-      <el-table-column prop="email" label="邮箱"/>
-      <el-table-column prop="mobile" label="手机号码" width="100px"/>
-      <el-table-column prop="department.name" label="部门" width="100px"/>
-      <el-table-column prop="position" label="职位" width="100px"/>
+      <el-table-column prop="usernick" label="姓名" width="100px"/>
+      <el-table-column prop="roleName" label="邮箱"/>
+      <el-table-column prop="phone" label="手机号码" width="100px"/>
       <el-table-column label="状态" width="50px">
         <template slot-scope="scope">
-          <span>{{ scope.row.is_active ? '激活':'锁定' }}</span>
+          <span>{{ scope.row.isDeleted ? '激活':'锁定' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="200px" align="center">
-        <template slot-scope="scope">
-          <edit v-if="checkPermission(['admin','user_all','user_edit'])" :data="scope.row" :roles="roles" :organizations="organizations" :sup_this="sup_this"/>
+        <!-- <template slot-scope="scope">
+          <edit v-if="checkPermission(['admin','user_all','user_edit'])" :data="scope.row" :users="users" :organizations="organizations" :sup_this="sup_this"/>
           <updatePass v-if="checkPermission(['admin','user_all'])" :data="scope.row" :sup_this="sup_this"/>
           <el-popover
             v-if="checkPermission(['admin','user_all','user_delete'])"
@@ -35,7 +33,7 @@
             </div>
             <el-button slot="reference" :disabled="scope.row.id === 1" type="danger" size="mini">删除</el-button>
           </el-popover>
-        </template>
+        </template> -->
       </el-table-column>
     </el-table>
     <!--分页组件-->
@@ -50,25 +48,26 @@
 
 <script>
 import checkPermission from '@/utils/permission'
-import initData from '@/mixins/initData'
+// import initData from '@/mixins/initData'
 import { del } from '@/api/user'
-import { getRoles } from '@/api/role'
+import { getUserList } from '@/api/user'
 import { getOrganizationTree } from '@/api/organization'
 import { parseTime } from '@/utils/index'
-import eHeader from './module/header'
-import edit from './module/edit'
-import updatePass from './module/updatePass'
+// import eHeader from './module/header'
+// import edit from './module/edit'
+// import updatePass from './module/updatePass'
 export default {
-  components: { eHeader, edit, updatePass },
-  mixins: [initData],
+  components: { },
+  // components: { eHeader, edit, updatePass },
+  // mixins: [initData],
   data() {
     return {
-      roles: [], organizations: [], delLoading: false, sup_this: this
+      users: [], organizations: [], delLoading: false, sup_this: this
     }
   },
   created() {
-    this.getRoleALL()
-    this.getOrganizations()
+    this.getUserALL()
+    // this.getOrganizations()
     this.$nextTick(() => {
       this.init()
     })
@@ -110,12 +109,13 @@ export default {
         this.organizations = res.data
       })
     },
-    getRoleALL() {
-      getRoles().then(res => {
+    getUserALL() {
+      getUserList().then(res => {
         const newres = res.results.map(item => {
           return { ...item, label: item.name }
         })
-        this.roles = newres
+        debugger
+        this.users = newres
       })
     }
   }

@@ -34,12 +34,12 @@ export function updatePasswd(id, data) {
 export function getUserList(name) {
   if (name) {
     return request({
-      url: 'api/user/list/?name=' + name,
+      url: 'user/list?pageIndex=0&pageSize=10',
       method: 'get'
     })
   } else {
     return request({
-      url: 'api/user/list/',
+      url: 'user/list?pageIndex=0&pageSize=10',
       method: 'get'
     })
   }
