@@ -109,7 +109,9 @@ public class UserController {
         menuVO.setHidden(menu.getHidden() == 0);
         menuVO.setParentId(menu.getParentId());
         menuVO.setMeta(new MenuMeatVO(menu.getName(), menu.getIcon()));
-        menuVO.setRedirect("noRedirect");
+        if("Layout".equals(menu.getComponent())){
+            menuVO.setRedirect("noredirect");
+        }
         menuVO.setAlwaysShow(true);
         return menuVO;
     }
