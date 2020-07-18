@@ -13,6 +13,7 @@ import com.ygz.aspen.vo.user.res.MenuMeatVO;
 import com.ygz.aspen.vo.user.res.UserInfoVO;
 import com.ygz.aspen.vo.user.res.UserMenuVO;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,10 +71,18 @@ public class UserController {
 
     @GetMapping("/list")
     @RequiresRoles("admin")
-    public ResponseModel<List<UserInfoVO>> list(@RequestParam("pageIndex") Integer pageIndex,
+    public ResponseModel<List<UserInfoVO>> list(@RequestParam(value = "username",required = false) String username,
+                                                @RequestParam(value = "isDeleted",required = false) Integer isDeleted,
+                                                @RequestParam("pageIndex") Integer pageIndex,
                                                 @RequestParam("pageSize") Integer pageSize){
         List<UserInfoVO> userList = new ArrayList<>();
         UserDTO userDTO = new UserDTO();
+        if(StringUtils.isNotEmpty(username)){
+            userDTO.setUsername(username);
+        }
+        if(isDeleted != null){
+            userDTO.setIsDeleted(isDeleted);
+        }
         userDTO.setPageIndex(pageIndex);
         userDTO.setPageSize(pageSize);
         List<User> users = userService.selectUserList(userDTO);

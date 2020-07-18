@@ -31,17 +31,17 @@ export function updatePasswd(id, data) {
   })
 }
 
-export function getUserList(name) {
-  if (name) {
-    return request({
-      url: 'user/list?pageIndex=0&pageSize=10',
-      method: 'get'
-    })
-  } else {
-    return request({
-      url: 'user/list?pageIndex=0&pageSize=10',
-      method: 'get'
-    })
+export function getUserList(username, isDeletedValue, pageIndex, pageSize) {
+  var url = 'user/list?pageIndex=' + pageIndex + '&pageSize=' + pageSize
+  if (username) {
+    url += '&username=' + username
   }
+  if (isDeletedValue) {
+    url += '&isDeleted=' + isDeletedValue
+  }
+  return request({
+    url: url,
+    method: 'get'
+  })
 }
 

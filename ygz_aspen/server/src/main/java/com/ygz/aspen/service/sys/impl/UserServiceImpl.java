@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
         if(userDTO == null){
             return null;
         }
+        userDTO.setPageIndex(userDTO.getStart());
         return userMapper.selectUserList(userDTO);
     }
 

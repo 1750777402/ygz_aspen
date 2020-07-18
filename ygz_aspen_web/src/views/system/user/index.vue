@@ -1,39 +1,40 @@
 <template>
   <div class="app-container">
-    <!-- <eHeader :users="users" :organizations="organizations" :query="query"/> -->
+    <div class="head-container">
+      <!-- 搜索 -->
+      <el-input v-model="queryUsername" clearable placeholder="输入关键字搜索" style="width: 200px;" class="filter-item"/>
+      <el-select v-model="isDeletedValue" clearable placeholder="状态" class="filter-item" style="width: 90px">
+        <el-option v-for="item in isDeletedOptions" :key="item.value" :label="item.label" :value="item.value"/>
+      </el-select>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="toQuery">搜索</el-button>
+    </div>
     <!--表格渲染-->
-    <el-table v-loading="loading" :data="data" size="small" border style="width: 100%;">
+    <el-table :data="users" size="small" border style="width: 100%;">
       <el-table-column label="头像" width="50px">
         <template slot-scope="scope">
           <img :src="scope.row.image" class="el-avatar">
         </template>
       </el-table-column>
-      <el-table-column prop="username" label="用户名" width="150px"/>
-      <el-table-column prop="usernick" label="姓名" width="100px"/>
-      <el-table-column prop="roleName" label="邮箱"/>
-      <el-table-column prop="phone" label="手机号码" width="100px"/>
+      <el-table-column prop="username" label="用户名" />
+      <el-table-column prop="usernick" label="用户昵称"/>
+      <el-table-column prop="roleName" label="角色名称" />
+      <el-table-column prop="phone" label="手机号码"/>
       <el-table-column label="状态" width="50px">
         <template slot-scope="scope">
-          <span>{{ scope.row.isDeleted ? '激活':'锁定' }}</span>
+          <span>{{ scope.row.isDeleted ? '正常':'冻结' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="200px" align="center">
-        <!-- <template slot-scope="scope">
-          <edit v-if="checkPermission(['admin','user_all','user_edit'])" :data="scope.row" :users="users" :organizations="organizations" :sup_this="sup_this"/>
-          <updatePass v-if="checkPermission(['admin','user_all'])" :data="scope.row" :sup_this="sup_this"/>
-          <el-popover
-            v-if="checkPermission(['admin','user_all','user_delete'])"
-            :ref="scope.row.id"
-            placement="top"
-            width="180">
-            <p>确定删除本条数据吗？所有关联的数据将会被清除</p>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
-              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
-            </div>
-            <el-button slot="reference" :disabled="scope.row.id === 1" type="danger" size="mini">删除</el-button>
-          </el-popover>
-        </template> -->
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleEdit(scope.$index, scope.row)">删除</el-button>
+        </template>
       </el-table-column>
     </el-table>
     <!--分页组件-->
@@ -51,7 +52,7 @@ import checkPermission from '@/utils/permission'
 // import initData from '@/mixins/initData'
 import { del } from '@/api/user'
 import { getUserList } from '@/api/user'
-import { getOrganizationTree } from '@/api/organization'
+// import { getOrganizationTree } from '@/api/organization'
 import { parseTime } from '@/utils/index'
 // import eHeader from './module/header'
 // import edit from './module/edit'
@@ -62,15 +63,27 @@ export default {
   // mixins: [initData],
   data() {
     return {
-      users: [], organizations: [], delLoading: false, sup_this: this
+      users: [],
+      delLoading: false,
+      isDeletedOptions: [
+        {
+          value: '0',
+          label: '正常'
+        },
+        {
+          value: '1',
+          label: '冻结'
+        }
+      ],
+      isDeletedValue: null,
+      total: 0,
+      pageIndex: 1,
+      pageSize: 20,
+      queryUsername: ''
     }
   },
   created() {
     this.getUserALL()
-    // this.getOrganizations()
-    this.$nextTick(() => {
-      this.init()
-    })
   },
   methods: {
     parseTime,
@@ -104,19 +117,32 @@ export default {
         console.log(err)
       })
     },
-    getOrganizations() {
-      getOrganizationTree().then(res => {
-        this.organizations = res.data
-      })
-    },
     getUserALL() {
-      getUserList().then(res => {
-        const newres = res.results.map(item => {
+      getUserList(this.queryUsername, this.isDeletedValue, this.pageIndex, this.pageSize).then(res => {
+        const newres = res.data.map(item => {
           return { ...item, label: item.name }
         })
-        debugger
         this.users = newres
       })
+    },
+    // 去查询
+    toQuery() {
+      this.getUserALL()
+    },
+    handleEdit(index, row) {
+      console.log(index, row)
+    },
+    handleDelete(index, row) {
+      console.log(index, row)
+    },
+    pageChange(e) {
+      this.page = e
+      this.init()
+    },
+    sizeChange(e) {
+      this.page = 1
+      this.size = e
+      this.init()
     }
   }
 }
