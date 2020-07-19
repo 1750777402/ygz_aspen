@@ -17,4 +17,6 @@ public interface UserMapper {
     List<User> selectUserList(UserDTO user);
 
     User getUserByUname(@Param("username") String username);
+
+    int countUser(UserDTO userDTO);
 }

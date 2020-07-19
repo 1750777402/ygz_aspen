@@ -1,5 +1,6 @@
 package com.ygz.aspen.controller;
 
+import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.model.sys.Role;
@@ -8,7 +9,7 @@ import com.ygz.aspen.param.sys.UserDTO;
 import com.ygz.aspen.service.sys.MenuService;
 import com.ygz.aspen.service.sys.RoleService;
 import com.ygz.aspen.service.sys.UserService;
-import com.ygz.aspen.vo.ResponseModel;
+import com.ygz.aspen.common.base.ResponseModel;
 import com.ygz.aspen.vo.user.res.MenuMeatVO;
 import com.ygz.aspen.vo.user.res.UserInfoVO;
 import com.ygz.aspen.vo.user.res.UserMenuVO;
@@ -71,10 +72,10 @@ public class UserController {
 
     @GetMapping("/list")
     @RequiresRoles("admin")
-    public ResponseModel<List<UserInfoVO>> list(@RequestParam(value = "username",required = false) String username,
-                                                @RequestParam(value = "isDeleted",required = false) Integer isDeleted,
-                                                @RequestParam("pageIndex") Integer pageIndex,
-                                                @RequestParam("pageSize") Integer pageSize){
+    public ResponseModel<PageQueryResult<UserInfoVO>> list(@RequestParam(value = "username",required = false) String username,
+                                                           @RequestParam(value = "isDeleted",required = false) Integer isDeleted,
+                                                           @RequestParam("pageIndex") Integer pageIndex,
+                                                           @RequestParam("pageSize") Integer pageSize){
         List<UserInfoVO> userList = new ArrayList<>();
         UserDTO userDTO = new UserDTO();
         if(StringUtils.isNotEmpty(username)){
@@ -85,13 +86,11 @@ public class UserController {
         }
         userDTO.setPageIndex(pageIndex);
         userDTO.setPageSize(pageSize);
-        List<User> users = userService.selectUserList(userDTO);
-        if(CollectionUtils.isNotEmpty(users)){
-//            List<Long> userIds = users.stream().map(User::getUserId).collect(Collectors.toList());
-//            roleService.
-            users.forEach(user -> userList.add(toUserInfoVO(user)));
+        PageQueryResult<User> userPageQueryResult = userService.selectUserList(userDTO);
+        if(userPageQueryResult.isNotEmpty()){
+            userPageQueryResult.getDataList().forEach(user -> userList.add(toUserInfoVO(user)));
         }
-        return new ResponseModel<>(userList);
+        return new ResponseModel<>(new PageQueryResult<>(userList, userPageQueryResult.getTotal(), pageIndex, pageSize));
     }
 
     private UserInfoVO toUserInfoVO(User user){

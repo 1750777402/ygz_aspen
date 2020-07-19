@@ -1,4 +1,4 @@
-package com.ygz.aspen.vo;
+package com.ygz.aspen.common.base;
 
 public enum ResultMsgEnum {
 

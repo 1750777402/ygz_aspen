@@ -1,5 +1,6 @@
 package com.ygz.aspen.service.sys.impl;
 
+import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.dao.UserMapper;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.param.sys.UserDTO;
@@ -8,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,12 +40,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> selectUserList(UserDTO userDTO) {
+    public PageQueryResult<User> selectUserList(UserDTO userDTO) {
         if(userDTO == null){
-            return null;
+            return new PageQueryResult<>();
         }
         userDTO.setPageIndex(userDTO.getStart());
-        return userMapper.selectUserList(userDTO);
+        List<User> users = null;
+        int count = userMapper.countUser(userDTO);
+        if(count > 0){
+            users = userMapper.selectUserList(userDTO);
+        }
+        return new PageQueryResult<>(users, count, userDTO.getPageIndex(), userDTO.getPageSize());
     }
 
 }

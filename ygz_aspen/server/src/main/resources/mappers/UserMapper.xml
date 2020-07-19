@@ -61,7 +61,30 @@
             order by #{orderByClause}
         </if>
         <if test="pageIndex != null and pageIndex >= 0 and pageSize != null and pageSize > 0">
-            limit #{pageIndex}, #{pageSize}
+            limit #{start}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="countUser" resultType="java.lang.Integer">
+        select count(userId) from `User`
+        where 1=1
+        <if test="username != null">
+            and username = #{username, jdbcType=VARCHAR}
+        </if>
+        <if test="usernick != null">
+            and usernick = #{usernick, jdbcType=VARCHAR}
+        </if>
+        <if test="phone != null">
+            and phone = #{phone, jdbcType=VARCHAR}
+        </if>
+        <if test="isDeleted != null">
+            and isDeleted = #{isDeleted, jdbcType=TINYINT}
+        </if>
+        <if test="userIds != null">
+            and userId in
+            <foreach collection="userIds" open="(" separator="," close=")" item="uId">
+                #{uId}
+            </foreach>
         </if>
     </select>
 

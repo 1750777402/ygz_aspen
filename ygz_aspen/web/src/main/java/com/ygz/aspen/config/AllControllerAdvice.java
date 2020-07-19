@@ -2,8 +2,8 @@ package com.ygz.aspen.config;
 
 import com.ygz.aspen.common.base.BusinessException;
 import com.ygz.aspen.common.base.UnauthorizedException;
-import com.ygz.aspen.vo.ResponseModel;
-import com.ygz.aspen.vo.ResultMsgEnum;
+import com.ygz.aspen.common.base.ResponseModel;
+import com.ygz.aspen.common.base.ResultMsgEnum;
 import org.apache.shiro.ShiroException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
