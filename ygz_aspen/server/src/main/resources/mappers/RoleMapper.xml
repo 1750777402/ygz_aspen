@@ -38,6 +38,23 @@
         </if>
     </select>
 
+    <select id="countRole" resultType="java.lang.Integer">
+        select count(roleId) from `Role`
+        where 1=1
+        <if test="roleName != null">
+            and roleName = #{roleName, jdbcType=VARCHAR}
+        </if>
+        <if test="isDeleted != null">
+            and isDeleted = #{isDeleted, jdbcType=TINYINT}
+        </if>
+        <if test="roleIds != null">
+            and roleId in
+            <foreach collection="roleIds" open="(" separator="," close=")" item="rId">
+                #{rId}
+            </foreach>
+        </if>
+    </select>
+
 
     <insert id="addRole" parameterType="com.ygz.aspen.model.sys.Role" useGeneratedKeys="true" keyProperty="roleId">
         INSERT INTO

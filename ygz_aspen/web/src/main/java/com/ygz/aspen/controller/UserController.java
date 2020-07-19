@@ -1,5 +1,6 @@
 package com.ygz.aspen.controller;
 
+import com.ygz.aspen.common.base.PageQueryParam;
 import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.Menu;
@@ -10,9 +11,9 @@ import com.ygz.aspen.service.sys.MenuService;
 import com.ygz.aspen.service.sys.RoleService;
 import com.ygz.aspen.service.sys.UserService;
 import com.ygz.aspen.common.base.ResponseModel;
-import com.ygz.aspen.vo.user.res.MenuMeatVO;
-import com.ygz.aspen.vo.user.res.UserInfoVO;
-import com.ygz.aspen.vo.user.res.UserMenuVO;
+import com.ygz.aspen.vo.system.res.MenuMeatVO;
+import com.ygz.aspen.vo.system.res.UserInfoVO;
+import com.ygz.aspen.vo.system.res.UserMenuVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -47,7 +48,7 @@ public class UserController {
 
         UserInfoVO vo = new UserInfoVO();
         vo.setAvatar(user.getAvatar());
-        vo.setId(user.getUserId());
+        vo.setUserId(user.getUserId());
         vo.setUsername(user.getUsername());
         List<String> roleArr = new ArrayList<>();
         List<Role> roles = roleService.selectUserRoleByUserId(user.getUserId());
@@ -84,9 +85,7 @@ public class UserController {
         if(isDeleted != null){
             userDTO.setIsDeleted(isDeleted);
         }
-        userDTO.setPageIndex(pageIndex);
-        userDTO.setPageSize(pageSize);
-        PageQueryResult<User> userPageQueryResult = userService.selectUserList(userDTO);
+        PageQueryResult<User> userPageQueryResult = userService.selectUserList(userDTO, new PageQueryParam(pageIndex, pageSize));
         if(userPageQueryResult.isNotEmpty()){
             userPageQueryResult.getDataList().forEach(user -> userList.add(toUserInfoVO(user)));
         }
@@ -99,13 +98,13 @@ public class UserController {
         }
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setUsername(user.getUsername());
-        userInfoVO.setId(user.getUserId());
+        userInfoVO.setUserId(user.getUserId());
         userInfoVO.setAvatar(user.getAvatar());
         userInfoVO.setPhone(user.getPhone());
         userInfoVO.setUsernick(user.getUsernick());
         userInfoVO.setRoleName("系统管理员");
         userInfoVO.setRoleId(1L);
-        userInfoVO.setIsDeleted(user.getIsDeleted() == 0);
+        userInfoVO.setIsDeleted(user.getIsDeleted());
         return userInfoVO;
     }
 
@@ -180,8 +179,8 @@ public class UserController {
 //        userMenu.setPath("users");
 //        userMenu.setSort(2);
 //        userMenu.setName("用户管理");
-//        userMenu.setMeta(new MenuMeatVO("用户管理","user"));
-//        userMenu.setComponent("system/user/index");
+//        userMenu.setMeta(new MenuMeatVO("用户管理","system"));
+//        userMenu.setComponent("system/system/index");
 //        menuChildrenList.add(userMenu);
 //
 //        UserMenuVO menuMenu = new UserMenuVO();

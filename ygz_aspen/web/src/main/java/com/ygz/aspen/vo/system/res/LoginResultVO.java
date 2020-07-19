@@ -1,4 +1,4 @@
-package com.ygz.aspen.vo.user.res;
+package com.ygz.aspen.vo.system.res;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

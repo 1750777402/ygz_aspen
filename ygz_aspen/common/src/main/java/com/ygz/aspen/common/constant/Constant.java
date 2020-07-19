@@ -69,7 +69,7 @@ public class Constant {
         //管理员
         public static final String ADMIN= "admin";
         //普通用户
-        public static final String USER= "user";
+        public static final String USER= "system";
     }
 
 

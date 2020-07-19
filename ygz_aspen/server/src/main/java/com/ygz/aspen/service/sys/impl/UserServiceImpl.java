@@ -1,5 +1,6 @@
 package com.ygz.aspen.service.sys.impl;
 
+import com.ygz.aspen.common.base.PageQueryParam;
 import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.dao.UserMapper;
 import com.ygz.aspen.model.sys.User;
@@ -40,17 +41,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageQueryResult<User> selectUserList(UserDTO userDTO) {
+    public PageQueryResult<User> selectUserList(UserDTO userDTO, PageQueryParam page) {
         if(userDTO == null){
             return new PageQueryResult<>();
         }
-        userDTO.setPageIndex(userDTO.getStart());
+        userDTO.setPageIndex(page.getStart());
         List<User> users = null;
         int count = userMapper.countUser(userDTO);
         if(count > 0){
             users = userMapper.selectUserList(userDTO);
         }
-        return new PageQueryResult<>(users, count, userDTO.getPageIndex(), userDTO.getPageSize());
+        return new PageQueryResult<>(users, count, page.getPageIndex(), page.getPageSize());
     }
 
 }

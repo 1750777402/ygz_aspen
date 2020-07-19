@@ -1,9 +1,16 @@
 import request from '@/utils/request'
 
 // 获取所有的Role
-export function getRoles() {
+export function getRoleList(roleName, isDeleted, pageIndex, pageSize) {
+  var url = 'role/list?pageIndex=' + pageIndex + '&pageSize=' + pageSize
+  if (roleName) {
+    url += '&roleName=' + roleName
+  }
+  if (isDeleted) {
+    url += '&isDeleted=' + isDeleted
+  }
   return request({
-    url: 'api/roles/',
+    url: url,
     method: 'get'
   })
 }
@@ -16,7 +23,7 @@ export function add(data) {
   })
 }
 
-export function del(id) {
+export function delRole(id) {
   return request({
     url: 'api/roles/' + id + '/',
     method: 'delete'

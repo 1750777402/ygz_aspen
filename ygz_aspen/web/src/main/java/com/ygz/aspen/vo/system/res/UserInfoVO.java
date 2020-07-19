@@ -1,4 +1,4 @@
-package com.ygz.aspen.vo.user.res;
+package com.ygz.aspen.vo.system.res;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,7 +14,7 @@ public class UserInfoVO {
     private String avatar;
 
     @ApiModelProperty("用户id")
-    private Long id;
+    private Long userId;
 
     @ApiModelProperty("用户名")
     private String username;
@@ -35,6 +35,6 @@ public class UserInfoVO {
     private String roleName;
 
     @ApiModelProperty("用户状态")
-    private Boolean isDeleted;
+    private Integer isDeleted;
 
 }

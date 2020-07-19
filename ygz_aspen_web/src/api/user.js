@@ -31,13 +31,13 @@ export function updatePasswd(id, data) {
   })
 }
 
-export function getUserList(username, isDeletedValue, pageIndex, pageSize) {
+export function getUserList(username, isDeleted, pageIndex, pageSize) {
   var url = 'user/list?pageIndex=' + pageIndex + '&pageSize=' + pageSize
   if (username) {
     url += '&username=' + username
   }
-  if (isDeletedValue) {
-    url += '&isDeleted=' + isDeletedValue
+  if (isDeleted) {
+    url += '&isDeleted=' + isDeleted
   }
   return request({
     url: url,

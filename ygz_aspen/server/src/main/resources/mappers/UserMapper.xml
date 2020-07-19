@@ -61,7 +61,7 @@
             order by #{orderByClause}
         </if>
         <if test="pageIndex != null and pageIndex >= 0 and pageSize != null and pageSize > 0">
-            limit #{start}, #{pageSize}
+            limit #{pageIndex}, #{pageSize}
         </if>
     </select>
 

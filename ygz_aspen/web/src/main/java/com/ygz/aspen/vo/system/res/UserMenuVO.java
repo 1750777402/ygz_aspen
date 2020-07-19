@@ -1,4 +1,4 @@
-package com.ygz.aspen.vo.user.res;
+package com.ygz.aspen.vo.system.res;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,13 +22,13 @@ public class UserMenuVO {
     @ApiModelProperty("重定向路径，当设置 noRedirect 的时候该路由在面包屑导航中不可被点击")
     private String redirect;
 
-    @ApiModelProperty("组件地址 /user")
+    @ApiModelProperty("组件地址 /system")
     private String path;
 
     @ApiModelProperty("菜单名称")
     private String name;
 
-    @ApiModelProperty("组件路径 组件路径 例:(@/views/system/user/center)或(Layout)")
+    @ApiModelProperty("组件路径 组件路径 例:(@/views/system/system/center)或(Layout)")
     private String component;
 
     @ApiModelProperty("是否显示")

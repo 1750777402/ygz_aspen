@@ -41,12 +41,12 @@ public class Menu extends BaseModel {
     private Integer hidden;
 
     /**
-     * 组件地址 /user
+     * 组件地址 /system
      */
     private String path;
 
     /**
-     * 组件路径 @/views/system/user/center
+     * 组件路径 @/views/system/system/center
      */
     private String component;
 

@@ -3,25 +3,26 @@
     <div class="head-container">
       <!-- 搜索 -->
       <el-input v-model="queryUsername" clearable placeholder="输入关键字搜索" style="width: 200px;" class="filter-item"/>
-      <el-select v-model="isDeletedValue" clearable placeholder="状态" class="filter-item" style="width: 90px">
+      <el-select v-model="queryIsDeleted" clearable placeholder="状态" class="filter-item" style="width: 90px">
         <el-option v-for="item in isDeletedOptions" :key="item.value" :label="item.label" :value="item.value"/>
       </el-select>
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="toQuery">搜索</el-button>
     </div>
     <!--表格渲染-->
     <el-table :data="users" size="small" border style="width: 100%;">
-      <el-table-column label="头像" width="50px">
+      <el-table-column label="头像" width="60px">
         <template slot-scope="scope">
           <img :src="scope.row.image" class="el-avatar">
         </template>
       </el-table-column>
+      <el-table-column prop="userId" label="用户Id" />
       <el-table-column prop="username" label="用户名" />
       <el-table-column prop="usernick" label="用户昵称"/>
       <el-table-column prop="roleName" label="角色名称" />
       <el-table-column prop="phone" label="手机号码"/>
       <el-table-column label="状态" width="50px">
         <template slot-scope="scope">
-          <span>{{ scope.row.isDeleted ? '正常':'冻结' }}</span>
+          <span>{{ scope.row.isDeleted === 0 ? '正常':'冻结' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="200px" align="center">
@@ -40,6 +41,7 @@
     <!--分页组件-->
     <el-pagination
       :total="total"
+      :page-sizes="[20, 30, 50, 100]"
       style="margin-top: 8px;"
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
@@ -48,11 +50,8 @@
 </template>
 
 <script>
-import checkPermission from '@/utils/permission'
-// import initData from '@/mixins/initData'
 import { del } from '@/api/user'
 import { getUserList } from '@/api/user'
-// import { getOrganizationTree } from '@/api/organization'
 import { parseTime } from '@/utils/index'
 // import eHeader from './module/header'
 // import edit from './module/edit'
@@ -60,7 +59,6 @@ import { parseTime } from '@/utils/index'
 export default {
   components: { },
   // components: { eHeader, edit, updatePass },
-  // mixins: [initData],
   data() {
     return {
       users: [],
@@ -75,7 +73,7 @@ export default {
           label: '冻结'
         }
       ],
-      isDeletedValue: null,
+      queryIsDeleted: null,
       total: 0,
       pageIndex: 1,
       pageSize: 20,
@@ -87,17 +85,8 @@ export default {
   },
   methods: {
     parseTime,
-    checkPermission,
     beforeInit() {
-      this.url = 'api/users/'
-      const sort = 'id'
-      const query = this.query
-      const value = query.value
-      const is_active = query.is_active
-      this.params = { page: this.page, size: this.size, ordering: sort }
-      if (is_active !== '' && is_active !== null) { this.params['is_active'] = is_active }
-      if (value) { this.params['search'] = value }
-      return true
+
     },
     subDelete(id) {
       this.delLoading = true
@@ -118,15 +107,17 @@ export default {
       })
     },
     getUserALL() {
-      getUserList(this.queryUsername, this.isDeletedValue, this.pageIndex, this.pageSize).then(res => {
-        if (res.code === 1001 && res.data) {
-          const newres = res.data.dataList.map(item => {
-            return { ...item, label: item.name }
-          })
-          this.users = newres
-          this.total = res.data.total
-          this.pageIndex = res.data.pageIndex
-          this.pageSize = res.data.pageSize
+      getUserList(this.queryUsername, this.queryIsDeleted, this.pageIndex, this.pageSize).then(res => {
+        if (res.code === 1001) {
+          if (res.data) {
+            const dataList = res.data.dataList.map(item => {
+              return { ...item, label: item.username }
+            })
+            this.users = dataList
+            this.total = res.data.total
+            this.pageIndex = res.data.pageIndex
+            this.pageSize = res.data.pageSize
+          }
         } else {
           this.$message.error('查询出错')
         }

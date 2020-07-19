@@ -1,5 +1,7 @@
 package com.ygz.aspen.service.sys;
 
+import com.ygz.aspen.common.base.PageQueryParam;
+import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.param.sys.RoleDTO;
 
@@ -7,7 +9,7 @@ import java.util.List;
 
 public interface RoleService {
 
-    List<Role> selectRole(RoleDTO role);
+    PageQueryResult<Role> selectRole(RoleDTO role, PageQueryParam page);
 
     Boolean addRole(Role role);
 

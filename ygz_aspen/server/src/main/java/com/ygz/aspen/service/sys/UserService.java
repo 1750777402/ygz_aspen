@@ -1,5 +1,6 @@
 package com.ygz.aspen.service.sys;
 
+import com.ygz.aspen.common.base.PageQueryParam;
 import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.param.sys.UserDTO;
@@ -14,6 +15,6 @@ public interface UserService {
 
     int addUser(User user);
 
-    PageQueryResult<User> selectUserList(UserDTO user);
+    PageQueryResult<User> selectUserList(UserDTO user, PageQueryParam page);
 
 }

@@ -1,5 +1,7 @@
 package com.ygz.aspen.service.sys.impl;
 
+import com.ygz.aspen.common.base.PageQueryParam;
+import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.dao.sys.RoleMapper;
 import com.ygz.aspen.dao.sys.UserRoleMapper;
 import com.ygz.aspen.model.sys.Role;
@@ -24,11 +26,17 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public List<Role> selectRole(RoleDTO dto) {
+    public PageQueryResult<Role> selectRole(RoleDTO dto, PageQueryParam page) {
         if(dto == null){
             return null;
         }
-        return roleMapper.selectRoleList(dto);
+        dto.setPageIndex(page.getStart());
+        int count = roleMapper.countRole(dto);
+        List<Role> roles = null;
+        if(count > 0){
+            roles = roleMapper.selectRoleList(dto);
+        }
+        return new PageQueryResult<>(roles, count, page.getPageIndex(), page.getPageSize());
     }
 
     @Override

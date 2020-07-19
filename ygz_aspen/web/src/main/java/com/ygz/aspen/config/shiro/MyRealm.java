@@ -69,7 +69,7 @@ public class MyRealm extends AuthorizingRealm {
             Set<String> roleNameSet = roles.stream().map(role -> role.getRoleCode()).collect(Collectors.toSet());
             simpleAuthorizationInfo.addRoles(roleNameSet);
 
-            //控制菜单级别按钮  类中用@RequiresPermissions("user:list") 对应数据库中code字段来控制controller
+            //控制菜单级别按钮  类中用@RequiresPermissions("system:list") 对应数据库中code字段来控制controller
 //            List<Long> roleIds = roles.stream().map(role -> role.getRoleId()).collect(Collectors.toList());
 //            List<Menu> menuList = menuService.selectMenuByRoleIds(roleIds);
 //            if(CollectionUtils.isNotEmpty(menuList)){

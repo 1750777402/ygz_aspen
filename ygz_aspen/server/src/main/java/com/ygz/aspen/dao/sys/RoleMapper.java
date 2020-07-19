@@ -16,4 +16,6 @@ public interface RoleMapper {
 
     List<Role> selectRoleList(RoleDTO roleDTO);
 
+    int countRole(RoleDTO roleDTO);
+
 }
