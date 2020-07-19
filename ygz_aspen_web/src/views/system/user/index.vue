@@ -119,10 +119,17 @@ export default {
     },
     getUserALL() {
       getUserList(this.queryUsername, this.isDeletedValue, this.pageIndex, this.pageSize).then(res => {
-        const newres = res.data.map(item => {
-          return { ...item, label: item.name }
-        })
-        this.users = newres
+        if (res.code === 1001 && res.data) {
+          const newres = res.data.dataList.map(item => {
+            return { ...item, label: item.name }
+          })
+          this.users = newres
+          this.total = res.data.total
+          this.pageIndex = res.data.pageIndex
+          this.pageSize = res.data.pageSize
+        } else {
+          this.$message.error('查询出错')
+        }
       })
     },
     // 去查询
@@ -136,13 +143,13 @@ export default {
       console.log(index, row)
     },
     pageChange(e) {
-      this.page = e
-      this.init()
+      this.pageIndex = e
+      this.getUserALL()
     },
     sizeChange(e) {
       this.page = 1
-      this.size = e
-      this.init()
+      this.pageSize = e
+      this.getUserALL()
     }
   }
 }
