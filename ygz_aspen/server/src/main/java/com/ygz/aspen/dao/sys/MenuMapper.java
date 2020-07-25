@@ -16,4 +16,6 @@ public interface MenuMapper {
 
     List<Menu> selectMenuList(MenuDTO menuDTO);
 
+    int countMenu(MenuDTO menuDTO);
+
 }

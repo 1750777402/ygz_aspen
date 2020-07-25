@@ -23,6 +23,11 @@ public class MenuDTO extends BaseQueryParam {
      */
     private Long parentId;
 
+    /**
+     * 是否显示 0-不显示  1-显示
+     */
+    private Integer hidden;
+
     private List<Long> menuIds;
 
     private List<Long> parentIds;

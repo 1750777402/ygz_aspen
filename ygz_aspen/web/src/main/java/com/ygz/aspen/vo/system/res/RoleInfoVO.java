@@ -1,10 +1,8 @@
 package com.ygz.aspen.vo.system.res;
 
-import com.ygz.aspen.model.sys.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
 
 @Data
 @ApiModel

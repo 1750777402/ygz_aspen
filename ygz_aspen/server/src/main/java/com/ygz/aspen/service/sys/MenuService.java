@@ -1,5 +1,7 @@
 package com.ygz.aspen.service.sys;
 
+import com.ygz.aspen.common.base.PageQueryParam;
+import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.param.sys.MenuDTO;
 
@@ -7,7 +9,7 @@ import java.util.List;
 
 public interface MenuService {
 
-    List<Menu> selectMenuList(MenuDTO dto);
+    PageQueryResult<Menu> selectMenuList(MenuDTO dto, PageQueryParam page);
 
     Boolean addMenu(Menu menu);
 

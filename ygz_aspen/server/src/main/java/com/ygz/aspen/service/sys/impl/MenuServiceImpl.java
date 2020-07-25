@@ -1,5 +1,7 @@
 package com.ygz.aspen.service.sys.impl;
 
+import com.ygz.aspen.common.base.PageQueryParam;
+import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.dao.sys.MenuMapper;
 import com.ygz.aspen.dao.sys.RoleMenuMapper;
 import com.ygz.aspen.model.sys.Menu;
@@ -10,6 +12,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +27,19 @@ public class MenuServiceImpl implements MenuService {
 
 
     @Override
-    public List<Menu> selectMenuList(MenuDTO dto) {
-        return menuMapper.selectMenuList(dto);
+    public PageQueryResult<Menu> selectMenuList(MenuDTO dto, PageQueryParam page) {
+        if(page == null){
+            return new PageQueryResult<>();
+        }
+        int count = menuMapper.countMenu(dto);
+        List<Menu> menus = null;
+        if(count > 0){
+            dto.setPageIndex(page.getStart());
+            dto.setPageSize(page.getPageSize());
+            dto.setOrderByClause(" sort ");
+            menus = menuMapper.selectMenuList(dto);
+        }
+        return new PageQueryResult(menus, count, page.getPageIndex(), page.getPageSize());
     }
 
     @Override
@@ -56,6 +70,7 @@ public class MenuServiceImpl implements MenuService {
             MenuDTO dto = new MenuDTO();
             dto.setMenuIds(menuIds);
             dto.setIsDeleted(0);
+            dto.setHidden(1);
             return menuMapper.selectMenuList(dto);
         }
         return null;

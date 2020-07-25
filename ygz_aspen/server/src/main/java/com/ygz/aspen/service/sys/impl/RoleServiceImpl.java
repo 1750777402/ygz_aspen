@@ -28,7 +28,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public PageQueryResult<Role> selectRole(RoleDTO dto, PageQueryParam page) {
         if(dto == null){
-            return null;
+            return new PageQueryResult<>();
         }
         dto.setPageIndex(page.getStart());
         int count = roleMapper.countRole(dto);

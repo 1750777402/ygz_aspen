@@ -36,7 +36,7 @@ public class Menu extends BaseModel {
     private String icon;
 
     /**
-     * 是否显示  0-false不显示  1-true 显示
+     * 是否显示  0-不显示  1-显示
      */
     private Integer hidden;
 

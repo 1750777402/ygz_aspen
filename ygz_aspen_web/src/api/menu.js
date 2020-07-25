@@ -1,9 +1,13 @@
 import request from '@/utils/request'
 
 // 获取所有的菜单树
-export function getMenuTree() {
+export function getMenuTree(queryMenuName, parentMenuId, pageIndex, pageSize) {
+  var url = 'menu/tree?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&parentMenuId=' + parentMenuId
+  if (queryMenuName) {
+    url += '&menuName=' + queryMenuName
+  }
   return request({
-    url: 'api/menu/tree/',
+    url: url,
     method: 'get'
   })
 }

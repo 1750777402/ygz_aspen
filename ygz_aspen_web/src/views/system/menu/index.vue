@@ -1,8 +1,21 @@
 <template>
   <div class="app-container">
-    <eHeader :menus="menus" :query="query"/>
+    <div class="head-container">
+      <!-- 搜索 -->
+      <el-input v-model="queryMenuName" clearable placeholder="菜单名称" style="width: 200px;" class="filter-item"/>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="toQuery">搜索</el-button>
+    </div>
     <!--表格渲染-->
-    <tree-table v-loading="loading" :data="data" :expand-all="true" :columns="columns" border size="small">
+    <el-table
+      :data="menus"
+      :expand-all="false"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      :load="getNextMenu"
+      row-key="menuId"
+      border
+      size="small"
+      lazy >
+      <el-table-column prop="menuName" label="角色名称" />
       <el-table-column prop="icon" label="图标" align="center" width="80px">
         <template slot-scope="scope">
           <svg-icon :icon-class="scope.row.icon" />
@@ -15,39 +28,28 @@
       </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="path" label="链接地址"/>
       <el-table-column :show-overflow-tooltip="true" prop="component" label="组件路径"/>
-      <el-table-column prop="is_frame" width="80px" label="内部菜单">
-        <template slot-scope="scope">
-          <span v-if="!scope.row.is_frame">是</span>
-          <span v-else>否</span>
-        </template>
-      </el-table-column>
       <el-table-column prop="is_frame" width="80px" label="是否显示">
         <template slot-scope="scope">
-          <span v-if="scope.row.is_show">是</span>
-          <span v-else>否</span>
+          <span>{{ scope.row.hidden === 0 ? '是':'否' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="150px" align="center">
         <template slot-scope="scope">
-          <edit v-if="checkPermission(['admin','menu_all','menu_edit'])" :menus="menus" :data="scope.row" :sup_this="sup_this"/>
-          <el-popover
-            v-if="checkPermission(['admin','menu_all','menu_delete'])"
-            :ref="scope.row.id"
-            placement="top"
-            width="200">
-            <p>确定删除吗,如果存在下级节点则节点上升，此操作不能撤销！</p>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
-              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
-            </div>
-            <el-button slot="reference" :disabled="scope.row.id === 1" type="danger" size="mini">删除</el-button>
-          </el-popover>
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleEdit(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
-    </tree-table>
+    </el-table>
+    <!--分页组件-->
     <el-pagination
       :total="total"
-      :page-sizes="[100, 200, 300, 400]"
+      :page-sizes="[50, 100, 300]"
       style="margin-top: 8px;"
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
@@ -56,45 +58,29 @@
 </template>
 
 <script>
-import checkPermission from '@/utils/permission' // 权限判断函数
-import treeTable from '@/components/TreeTable'
-import initData from '@/mixins/initData'
 import { del, getMenuTree } from '@/api/menu'
 import { parseTime } from '@/utils/index'
-import eHeader from './module/header'
-import edit from './module/edit'
+// import edit from './module/edit'
 export default {
-  components: { eHeader, edit, treeTable },
-  mixins: [initData],
+  // components: { eHeader, edit, treeTable },
+  components: { },
   data() {
     return {
-      columns: [
-        {
-          text: '名称',
-          value: 'name'
-        }
-      ],
-      delLoading: false, sup_this: this, menus: []
+      menus: [],
+      delLoading: false,
+      total: 0,
+      pageIndex: 1,
+      pageSize: 50,
+      queryMenuName: '',
+      load: false
     }
   },
   created() {
     this.getMenus()
-    this.$nextTick(() => {
-      this.init(
-        this.size = 100
-      )
-    })
   },
   methods: {
     parseTime,
-    checkPermission,
     beforeInit() {
-      this.url = 'api/menus/'
-      const sort = 'sort'
-      const query = this.query
-      const value = query.value
-      this.params = { page: this.page, size: this.size, ordering: sort }
-      if (value) { this.params['search'] = value }
       return true
     },
     subDelete(id) {
@@ -115,10 +101,55 @@ export default {
         console.log(err)
       })
     },
+    handleEdit(index, row) {
+      console.log(index, row)
+    },
+    handleDelete(index, row) {
+      console.log(index, row)
+    },
     getMenus() {
-      getMenuTree().then(res => {
-        this.menus = res.data
+      getMenuTree(this.queryMenuName, 0, this.pageIndex, this.pageSize).then(res => {
+        if (res.code === 1001) {
+          if (res.data) {
+            const dataList = res.data.dataList.map(item => {
+              return { ...item, label: item.roleName }
+            })
+            this.menus = dataList
+            this.total = res.data.total
+            this.pageIndex = res.data.pageIndex
+            this.pageSize = res.data.pageSize
+          }
+        } else {
+          this.$message.error('查询出错')
+        }
       })
+    },
+    // 去查询
+    toQuery() {
+      this.getMenus()
+    },
+    getNextMenu(tree, treeNode, resolve) {
+      getMenuTree(this.queryMenuName, tree.menuId, this.pageIndex, this.pageSize).then(res => {
+        if (res.code === 1001) {
+          if (res.data) {
+            const dataList = res.data.dataList.map(item => {
+              return { ...item, label: item.roleName }
+            })
+            resolve(dataList)
+          }
+        } else {
+          this.$message.error('查询出错')
+        }
+      })
+    },
+    pageChange(e) {
+      this.pageIndex = e
+      this.getRoleALL()
+    },
+    sizeChange(e) {
+      this.page = 1
+      this.pageSize = e
+      this.getRoleALL()
     }
   }
 }
