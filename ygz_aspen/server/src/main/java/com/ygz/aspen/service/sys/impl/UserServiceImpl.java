@@ -2,6 +2,7 @@ package com.ygz.aspen.service.sys.impl;
 
 import com.ygz.aspen.common.base.PageQueryParam;
 import com.ygz.aspen.common.base.PageQueryResult;
+import com.ygz.aspen.common.utils.TimeUtil;
 import com.ygz.aspen.dao.UserMapper;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.param.sys.UserDTO;
@@ -37,6 +38,9 @@ public class UserServiceImpl implements UserService {
         if(user == null){
             return 0;
         }
+        user.setCreated(TimeUtil.getInstance().secondNow());
+        user.setIsDeleted(0);
+        user.setUpdated(user.getCreated());
         return userMapper.addUser(user);
     }
 
@@ -52,6 +56,30 @@ public class UserServiceImpl implements UserService {
             users = userMapper.selectUserList(userDTO);
         }
         return new PageQueryResult<>(users, count, page.getPageIndex(), page.getPageSize());
+    }
+
+    @Override
+    public boolean delUser(Long userId) {
+        if(userId == null){
+            return false;
+        }
+        int delRes = userMapper.delUser(userId);
+        if(delRes > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateUser(User user) {
+        if(user == null || user.getUserId() == null){
+            return false;
+        }
+        int i = userMapper.updateUser(user);
+        if(i > 0){
+            return true;
+        }
+        return false;
     }
 
 }

@@ -17,4 +17,7 @@ public interface UserService {
 
     PageQueryResult<User> selectUserList(UserDTO user, PageQueryParam page);
 
+    boolean delUser(Long userId);
+
+    boolean updateUser(User user);
 }

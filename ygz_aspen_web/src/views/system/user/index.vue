@@ -7,6 +7,7 @@
         <el-option v-for="item in isDeletedOptions" :key="item.value" :label="item.label" :value="item.value"/>
       </el-select>
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="toQuery">搜索</el-button>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="addUserDiaLog">新增用户</el-button>
     </div>
     <!--表格渲染-->
     <el-table :data="users" size="small" border style="width: 100%;">
@@ -32,9 +33,10 @@
             type="primary"
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button
+            :loading="delLoading"
             size="mini"
             type="danger"
-            @click="handleEdit(scope.$index, scope.row)">删除</el-button>
+            @click="handleDel(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -46,16 +48,53 @@
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
+
+    <!-- User Form -->
+    <el-dialog :append-to-body="true" :visible.sync="dialogAddUserVisible" :title="formTitle" width="850px">
+      <el-form :model="addUserForm" size="small">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label-width="formLabelWidth" label="用户名" >
+              <el-input v-model="addUserForm.username" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label-width="formLabelWidth" label="用户昵称">
+              <el-input v-model="addUserForm.usernick" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label-width="formLabelWidth" label="手机号">
+              <el-input v-model="addUserForm.phone" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label-width="formLabelWidth" label="所属角色" >
+              <el-select v-model="addUserForm.roleIds" multiple placeholder="请选择用户所属角色">
+                <el-option
+                  v-for="item in roleOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelAddUser">取 消</el-button>
+        <el-button type="primary" @click="saveUser">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { del } from '@/api/user'
-import { getUserList } from '@/api/user'
+import { delUser, getUserList, saveUser } from '@/api/user'
+import { getRoleList } from '@/api/role'
 import { parseTime } from '@/utils/index'
-// import eHeader from './module/header'
-// import edit from './module/edit'
-// import updatePass from './module/updatePass'
+
 export default {
   components: { },
   // components: { eHeader, edit, updatePass },
@@ -77,23 +116,33 @@ export default {
       total: 0,
       pageIndex: 1,
       pageSize: 20,
-      queryUsername: ''
+      queryUsername: '',
+      dialogAddUserVisible: false,
+      addUserForm: {
+        username: '',
+        usernick: '',
+        phone: '',
+        roleIds: [],
+        userId: null
+      },
+      roleOptions: [],
+      formLabelWidth: '120px',
+      formTitle: ''
     }
   },
   created() {
     this.getUserALL()
+    this.getRoleOptions()
   },
   methods: {
     parseTime,
     beforeInit() {
-
     },
-    subDelete(id) {
+    handleDel(id, row) {
       this.delLoading = true
-      del(id).then(res => {
+      delUser(row.userId).then(res => {
         this.delLoading = false
-        this.$refs[id].doClose()
-        this.init()
+        this.getUserALL()
         this.$message({
           showClose: true,
           type: 'success',
@@ -102,7 +151,7 @@ export default {
         })
       }).catch(err => {
         this.delLoading = false
-        this.$refs[id].doClose()
+        this.$message.error('删除用户出错')
         console.log(err)
       })
     },
@@ -128,10 +177,15 @@ export default {
       this.getUserALL()
     },
     handleEdit(index, row) {
-      console.log(index, row)
-    },
-    handleDelete(index, row) {
-      console.log(index, row)
+      this.formTitle = '编辑用户'
+      this.addUserForm = {
+        username: row.username,
+        usernick: row.usernick,
+        phone: row.phone,
+        roleIds: row.roleIds,
+        userId: row.userId
+      }
+      this.dialogAddUserVisible = true
     },
     pageChange(e) {
       this.pageIndex = e
@@ -141,6 +195,45 @@ export default {
       this.page = 1
       this.pageSize = e
       this.getUserALL()
+    },
+    addUserDiaLog() {
+      this.dialogAddUserVisible = true
+      this.formTitle = '新增用户'
+    },
+    saveUser() {
+      saveUser(this.addUserForm).then(res => {
+        this.getUserALL()
+        this.$message({
+          showClose: true,
+          type: 'success',
+          message: '操作成功',
+          duration: 2500
+        })
+        this.clearFormData()
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getRoleOptions() {
+      getRoleList(null, null, 1, 100).then(res => {
+        if (res.code === 1001) {
+          if (res.data) {
+            const dataList = res.data.dataList.map(item => {
+              return { label: item.roleName, value: item.roleId }
+            })
+            this.roleOptions = dataList
+          }
+        } else {
+          this.$message.error('获取角色选项加载出错')
+        }
+      })
+    },
+    cancelAddUser() {
+      this.dialogAddUserVisible = false
+      this.clearFormData()
+    },
+    clearFormData() {
+      this.addUserForm = { username: '', usernick: '', phone: '', role: [], userId: null }
     }
   }
 }

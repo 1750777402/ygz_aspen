@@ -15,7 +15,7 @@
         select * from `UserRole` where userId = #{userId,jdbcType=BIGINT} and isDeleted = 0
     </select>
 
-    <insert id="addUserRole" parameterType="com.ygz.aspen.model.sys.UserRole" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addUserRole" parameterType="com.ygz.aspen.model.sys.UserRole" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO
             `UserRole`(`roleId`, `userId`, `isDeleted`, `created`, `updated`)
         VALUES

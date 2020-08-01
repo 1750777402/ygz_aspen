@@ -17,4 +17,5 @@ public interface RoleService {
 
     List<Role> selectUserRoleByUserId(Long userId);
 
+    boolean addUserRole(long userId, List<Long> roleIds);
 }

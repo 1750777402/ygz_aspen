@@ -19,4 +19,8 @@ public interface UserMapper {
     User getUserByUname(@Param("username") String username);
 
     int countUser(UserDTO userDTO);
+
+    int delUser(Long userId);
+
+    int updateUser(User user);
 }

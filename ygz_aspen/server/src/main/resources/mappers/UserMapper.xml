@@ -28,6 +28,31 @@
              #{updated,jdbcType=BIGINT})
     </insert>
 
+    <update id="delUser">
+        UPDATE `user` SET isDeleted=1, updated=unix_timestamp() where userId = #{userId, jdbcType=BIGINT} limit 1
+    </update>
+
+    <update id="updateUser" parameterType="com.ygz.aspen.model.sys.User">
+        UPDATE `user`
+        <set>
+            updated=unix_timestamp(),
+            <if test="usernick != null and usernick != ''" >
+                usernick = #{usernick,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null and avatar != ''" >
+                avatar = #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null and phone != ''" >
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null" >
+                isDeleted = #{isDeleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where userId = #{userId, jdbcType=BIGINT}
+        limit 1
+    </update>
+
     <select id="getUserById" resultType="com.ygz.aspen.model.sys.User">
         select * from `User` where userId = #{userId,jdbcType=BIGINT}
     </select>

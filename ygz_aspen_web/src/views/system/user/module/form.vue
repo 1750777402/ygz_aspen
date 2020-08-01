@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/user'
+import { saveUser, editUser } from '@/api/user'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { isvalidPhone } from '@/utils/validate'
@@ -149,7 +149,7 @@ export default {
       })
     },
     doAdd() {
-      add(this.form).then(res => {
+      saveUser(this.form).then(res => {
         this.resetForm()
         this.$message({
           showClose: true,
@@ -165,7 +165,7 @@ export default {
       })
     },
     doEdit() {
-      edit(this.form.id, this.form).then(res => {
+      editUser(this.form.id, this.form).then(res => {
         this.resetForm()
         this.$message({
           showClose: true,

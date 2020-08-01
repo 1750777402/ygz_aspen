@@ -2,6 +2,7 @@ package com.ygz.aspen.controller;
 
 import com.ygz.aspen.common.base.PageQueryParam;
 import com.ygz.aspen.common.base.PageQueryResult;
+import com.ygz.aspen.common.base.ResultMsgEnum;
 import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.model.sys.Role;
@@ -11,6 +12,7 @@ import com.ygz.aspen.service.sys.MenuService;
 import com.ygz.aspen.service.sys.RoleService;
 import com.ygz.aspen.service.sys.UserService;
 import com.ygz.aspen.common.base.ResponseModel;
+import com.ygz.aspen.vo.system.req.UserAddVO;
 import com.ygz.aspen.vo.system.res.MenuMeatVO;
 import com.ygz.aspen.vo.system.res.UserInfoVO;
 import com.ygz.aspen.vo.system.res.UserMenuVO;
@@ -18,10 +20,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -162,46 +161,46 @@ public class UserController {
         return menuVO;
     }
 
-//    private List<UserMenuVO> getUserMenuVO(){
-//        List<UserMenuVO> userMenuVOList = new ArrayList<>();
-//
-//        List<UserMenuVO> menuChildrenList = new ArrayList<>();
-//
-//        UserMenuVO sysMenu = new UserMenuVO();
-//        sysMenu.setPath("/system");
-//        sysMenu.setSort(1);
-//        sysMenu.setRedirect("noredirect");
-//        sysMenu.setName("系统管理");
-//        sysMenu.setMeta(new MenuMeatVO("系统管理","system"));
-//        sysMenu.setComponent("Layout");
-//
-//        UserMenuVO userMenu = new UserMenuVO();
-//        userMenu.setPath("users");
-//        userMenu.setSort(2);
-//        userMenu.setName("用户管理");
-//        userMenu.setMeta(new MenuMeatVO("用户管理","system"));
-//        userMenu.setComponent("system/system/index");
-//        menuChildrenList.add(userMenu);
-//
-//        UserMenuVO menuMenu = new UserMenuVO();
-//        menuMenu.setPath("menus");
-//        menuMenu.setSort(3);
-//        menuMenu.setName("菜单管理");
-//        menuMenu.setMeta(new MenuMeatVO("菜单管理","caidan"));
-//        menuMenu.setComponent("system/menu/index");
-//        menuChildrenList.add(menuMenu);
-//
-//        UserMenuVO roleMenu = new UserMenuVO();
-//        roleMenu.setPath("roles");
-//        roleMenu.setSort(4);
-//        roleMenu.setName("角色管理");
-//        roleMenu.setMeta(new MenuMeatVO("角色管理","role"));
-//        roleMenu.setComponent("system/role/index");
-//        menuChildrenList.add(roleMenu);
-//
-//        sysMenu.setChildren(menuChildrenList);
-//        userMenuVOList.add(sysMenu);
-//        return userMenuVOList;
-//    }
+    @PostMapping("/save")
+    @RequiresRoles("admin")
+    public ResponseModel<Boolean> add(@RequestBody UserAddVO userAddVO){
+        if(userAddVO == null || StringUtils.isBlank(userAddVO.getUsernick())
+                || StringUtils.isBlank(userAddVO.getPhone()) || StringUtils.isBlank(userAddVO.getUsername())){
+            return new ResponseModel<>(ResultMsgEnum.PARAM_ERROR);
+        }
+        if(userAddVO.getUserId() == null){
+            User user = new User();
+            user.setAvatar("1");
+            user.setPhone(userAddVO.getPhone());
+            user.setUsernick(userAddVO.getUsernick());
+            user.setUsername(userAddVO.getUsername());
+            user.setPassword("123456");
+            int i = userService.addUser(user);
+            if(i > 0){
+                List<Long> roleIds = userAddVO.getRoleIds();
+                if(CollectionUtils.isNotEmpty(roleIds)){
+                    roleService.addUserRole(user.getUserId(), roleIds);
+                }
+                return new ResponseModel<>(true);
+            }
+        }else{
+            User user = new User();
+            user.setUserId(userAddVO.getUserId());
+            user.setUsername(userAddVO.getUsername());
+            user.setPhone(userAddVO.getPhone());
+            boolean updateRes = userService.updateUser(user);
+            return new ResponseModel<>(updateRes);
+        }
+        return new ResponseModel<>(ResultMsgEnum.ERROR);
+    }
+
+    @GetMapping("del")
+    @RequiresRoles("admin")
+    public ResponseModel<Boolean> del(@RequestParam("userId") Long userId){
+        if(userService.delUser(userId)){
+            return new ResponseModel<>(true);
+        }
+        return new ResponseModel<>(ResultMsgEnum.ERROR);
+    }
 
 }

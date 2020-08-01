@@ -2,6 +2,7 @@ package com.ygz.aspen.service.sys.impl;
 
 import com.ygz.aspen.common.base.PageQueryParam;
 import com.ygz.aspen.common.base.PageQueryResult;
+import com.ygz.aspen.common.utils.TimeUtil;
 import com.ygz.aspen.dao.sys.RoleMapper;
 import com.ygz.aspen.dao.sys.UserRoleMapper;
 import com.ygz.aspen.model.sys.Role;
@@ -73,5 +74,22 @@ public class RoleServiceImpl implements RoleService {
             return roleMapper.selectRoleList(dto);
         }
         return null;
+    }
+
+    @Override
+    public boolean addUserRole(long userId, List<Long> roleIds) {
+        if(userId < 1 || CollectionUtils.isEmpty(roleIds)){
+            return false;
+        }
+        roleIds.forEach(roleId -> {
+            UserRole userRole = new UserRole();
+            userRole.setRoleId(roleId);
+            userRole.setUserId(userId);
+            userRole.setIsDeleted(0);
+            userRole.setCreated(TimeUtil.getInstance().secondNow());
+            userRole.setUpdated(userRole.getCreated());
+            userRoleMapper.addUserRole(userRole);
+        });
+        return true;
     }
 }
