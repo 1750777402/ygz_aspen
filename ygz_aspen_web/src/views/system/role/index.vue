@@ -7,11 +7,13 @@
         <el-option v-for="item in isDeletedOptions" :key="item.value" :label="item.label" :value="item.value"/>
       </el-select>
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="toQuery">搜索</el-button>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="addRoleDiaLog">新增用户</el-button>
     </div>
     <!--表格渲染-->
     <el-table :data="roles" size="small" border style="width: 100%;">
       <el-table-column prop="roleId" label="角色id" width="100px"/>
       <el-table-column prop="roleName" label="角色名称" />
+      <el-table-column prop="roleCode" label="角色Code" />
       <el-table-column label="角色状态" >
         <template slot-scope="scope">
           <span>{{ scope.row.isDeleted === 0 ? '正常':'冻结' }}</span>
@@ -26,7 +28,7 @@
           <el-button
             size="mini"
             type="danger"
-            @click="handleEdit(scope.$index, scope.row)">删除</el-button>
+            @click="handleDel(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -37,14 +39,36 @@
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
+
+    <!-- Role Form -->
+    <el-dialog :append-to-body="true" :visible.sync="dialogAddRoleVisible" :title="formTitle" width="550px">
+      <el-form :model="addRoleForm" size="small">
+        <el-row>
+          <el-col >
+            <el-form-item :label-width="formLabelWidth" label="角色名称" >
+              <el-input v-model="addRoleForm.roleName" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col >
+            <el-form-item :label-width="formLabelWidth" label="角色code" >
+              <el-input v-model="addRoleForm.roleCode" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelAddRole">取 消</el-button>
+        <el-button type="primary" @click="saveRole">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { delRole } from '@/api/role'
-import { getRoleList } from '@/api/role'
+import { delRole, saveRole, getRoleList } from '@/api/role'
 import { parseTime } from '@/utils/index'
-// import edit from './module/edit'
 export default {
   components: { },
   // components: { eHeader, edit, updatePass },
@@ -66,7 +90,15 @@ export default {
       total: 0,
       pageIndex: 1,
       pageSize: 20,
-      queryRoleName: ''
+      queryRoleName: '',
+      dialogAddRoleVisible: false,
+      addRoleForm: {
+        roleName: '',
+        roleCode: '',
+        roleId: null
+      },
+      formLabelWidth: '120px',
+      formTitle: ''
     }
   },
   created() {
@@ -77,12 +109,11 @@ export default {
     beforeInit() {
       return true
     },
-    subDelete(id) {
+    handleDel(id, row) {
       this.delLoading = true
-      delRole(id).then(res => {
+      delRole(row.roleId).then(res => {
         this.delLoading = false
-        this.$refs[id].doClose()
-        this.init()
+        this.getRoleALL()
         this.$message({
           showClose: true,
           type: 'success',
@@ -91,7 +122,7 @@ export default {
         })
       }).catch(err => {
         this.delLoading = false
-        this.$refs[id].doClose()
+        this.$message.error('删除角色出错')
         console.log(err)
       })
     },
@@ -117,10 +148,13 @@ export default {
       this.getRoleALL()
     },
     handleEdit(index, row) {
-      console.log(index, row)
-    },
-    handleDelete(index, row) {
-      console.log(index, row)
+      this.formTitle = '编辑角色'
+      this.addRoleForm = {
+        roleName: row.roleName,
+        roleCode: row.roleCode,
+        roleId: row.roleId
+      }
+      this.dialogAddRoleVisible = true
     },
     pageChange(e) {
       this.pageIndex = e
@@ -130,6 +164,32 @@ export default {
       this.page = 1
       this.pageSize = e
       this.getRoleALL()
+    },
+    addRoleDiaLog() {
+      this.dialogAddRoleVisible = true
+      this.formTitle = '新增角色'
+      this.clearFormData()
+    },
+    saveRole() {
+      saveRole(this.addRoleForm).then(res => {
+        this.getRoleALL()
+        this.$message({
+          showClose: true,
+          type: 'success',
+          message: '操作成功',
+          duration: 2500
+        })
+        this.cancelAddRole()
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    cancelAddRole() {
+      this.dialogAddRoleVisible = false
+      this.clearFormData()
+    },
+    clearFormData() {
+      this.addRoleForm = { roleName: '', roleId: null }
     }
   }
 }

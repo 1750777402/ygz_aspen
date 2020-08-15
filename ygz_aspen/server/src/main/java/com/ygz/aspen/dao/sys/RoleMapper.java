@@ -18,4 +18,7 @@ public interface RoleMapper {
 
     int countRole(RoleDTO roleDTO);
 
+    int updateRole(Role role);
+
+    int delRole(@Param("roleId") Long roleId);
 }

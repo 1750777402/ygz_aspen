@@ -6,7 +6,7 @@ export function getRoleList(roleName, isDeleted, pageIndex, pageSize) {
   if (roleName) {
     url += '&roleName=' + roleName
   }
-  if (isDeleted) {
+  if (isDeleted != null) {
     url += '&isDeleted=' + isDeleted
   }
   return request({
@@ -15,9 +15,9 @@ export function getRoleList(roleName, isDeleted, pageIndex, pageSize) {
   })
 }
 
-export function add(data) {
+export function saveRole(data) {
   return request({
-    url: 'api/roles/',
+    url: '/role/save',
     method: 'post',
     data
   })
@@ -25,30 +25,7 @@ export function add(data) {
 
 export function delRole(id) {
   return request({
-    url: 'api/roles/' + id + '/',
-    method: 'delete'
-  })
-}
-
-export function edit(id, data) {
-  return request({
-    url: 'api/roles/' + id + '/',
-    method: 'put',
-    data
-  })
-}
-
-export function retrieve(id) {
-  return request({
-    url: 'api/roles/' + id + '/',
+    url: '/role/delRole?roleId=' + id,
     method: 'get'
-  })
-}
-
-export function save(id, data) {
-  return request({
-    url: 'api/roles/' + id + '/',
-    method: 'patch',
-    data
   })
 }

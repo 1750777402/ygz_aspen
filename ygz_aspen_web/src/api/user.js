@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
 export function saveUser(data) {
-  debugger
   return request({
     url: '/user/save',
     method: 'post',

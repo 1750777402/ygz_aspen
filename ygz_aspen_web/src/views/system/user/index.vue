@@ -177,6 +177,7 @@ export default {
       this.getUserALL()
     },
     handleEdit(index, row) {
+      this.getRoleOptions()
       this.formTitle = '编辑用户'
       this.addUserForm = {
         username: row.username,
@@ -199,6 +200,7 @@ export default {
     addUserDiaLog() {
       this.dialogAddUserVisible = true
       this.formTitle = '新增用户'
+      this.getRoleOptions()
     },
     saveUser() {
       saveUser(this.addUserForm).then(res => {
@@ -209,13 +211,13 @@ export default {
           message: '操作成功',
           duration: 2500
         })
-        this.clearFormData()
+        this.cancelAddUser()
       }).catch(err => {
         console.log(err)
       })
     },
     getRoleOptions() {
-      getRoleList(null, null, 1, 100).then(res => {
+      getRoleList(null, 0, 1, 100).then(res => {
         if (res.code === 1001) {
           if (res.data) {
             const dataList = res.data.dataList.map(item => {

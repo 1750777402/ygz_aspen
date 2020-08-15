@@ -9,8 +9,15 @@ import java.util.List;
 @Mapper
 public interface UserRoleMapper {
 
-    List<UserRole> selectUserRoleByUserId(@Param("userId")Long userId);
+    List<UserRole> selectUserRoleByUserId(@Param("userId") Long userId);
 
     int addUserRole(UserRole roleMenu);
 
+    List<UserRole> getUserRoleByUserIds(@Param("userIds") List<Long> userIds);
+
+    int batchAddUserRole(@Param("userRoleList") List<UserRole> userRoleList);
+
+    int batchDelUserRole(@Param("roleIds") List<Long> delIds);
+
+    int delUserRole(@Param("userId") Long userId);
 }

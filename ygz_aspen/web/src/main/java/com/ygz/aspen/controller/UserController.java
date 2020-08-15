@@ -1,12 +1,15 @@
 package com.ygz.aspen.controller;
 
+import com.google.common.collect.Lists;
 import com.ygz.aspen.common.base.PageQueryParam;
 import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.common.base.ResultMsgEnum;
+import com.ygz.aspen.common.utils.AspenCollectionUtil;
 import com.ygz.aspen.context.AspenContextHolder;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.model.sys.User;
+import com.ygz.aspen.model.sys.UserRole;
 import com.ygz.aspen.param.sys.UserDTO;
 import com.ygz.aspen.service.sys.MenuService;
 import com.ygz.aspen.service.sys.RoleService;
@@ -22,10 +25,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -86,12 +86,25 @@ public class UserController {
         }
         PageQueryResult<User> userPageQueryResult = userService.selectUserList(userDTO, new PageQueryParam(pageIndex, pageSize));
         if(userPageQueryResult.isNotEmpty()){
-            userPageQueryResult.getDataList().forEach(user -> userList.add(toUserInfoVO(user)));
+            List<User> users = userPageQueryResult.getDataList();
+            //本次查询的userId集合
+            List<Long> userIds = users.stream().map(User::getUserId).collect(Collectors.toList());
+            //本次查询的用户所拥有的角色map 这里不想做连表查询  所以复杂点
+            Map<Long, List<UserRole>> userRoleMap = roleService.getUserRoleMapByUserIds(userIds);
+            //本次查询的用户所有的角色id set
+            Set<Long> roleIds = new HashSet<>();
+            for (Map.Entry<Long, List<UserRole>> entry : userRoleMap.entrySet()) {
+                List<UserRole> userRoles = entry.getValue();
+                roleIds.addAll(userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toSet()));
+            }
+            //本次查询的用户所有的角色id set 对应的角色map
+            Map<Long, Role> roleMap = roleService.getRoleListByRoleIds(new ArrayList<>(roleIds));
+            users.forEach(user -> userList.add(toUserInfoVO(user, userRoleMap, roleMap)));
         }
         return new ResponseModel<>(new PageQueryResult<>(userList, userPageQueryResult.getTotal(), pageIndex, pageSize));
     }
 
-    private UserInfoVO toUserInfoVO(User user){
+    private UserInfoVO toUserInfoVO(User user, Map<Long, List<UserRole>> userRoleMap, Map<Long, Role> roleMap){
         if(user == null){
             return null;
         }
@@ -101,9 +114,21 @@ public class UserController {
         userInfoVO.setAvatar(user.getAvatar());
         userInfoVO.setPhone(user.getPhone());
         userInfoVO.setUsernick(user.getUsernick());
-        userInfoVO.setRoleName("系统管理员");
-        userInfoVO.setRoleId(1L);
         userInfoVO.setIsDeleted(user.getIsDeleted());
+        List<UserRole> userRoles = userRoleMap.get(user.getUserId());
+        if(CollectionUtils.isNotEmpty(userRoles)){
+            List<String> roleNames = new ArrayList<>();
+            List<Long> roleIds = new ArrayList<>();
+            userRoles.forEach(userRole -> {
+                Role role = roleMap.get(userRole.getRoleId());
+                if(role != null){
+                    roleNames.add(role.getRoleName());
+                }
+                roleIds.add(userRole.getRoleId());
+            });
+            userInfoVO.setRoleIds(roleIds);
+            userInfoVO.setRoleName(AspenCollectionUtil.jointList(roleNames, ","));
+        }
         return userInfoVO;
     }
 
@@ -189,7 +214,12 @@ public class UserController {
             user.setUsername(userAddVO.getUsername());
             user.setPhone(userAddVO.getPhone());
             boolean updateRes = userService.updateUser(user);
-            return new ResponseModel<>(updateRes);
+            if(updateRes){
+                List<Long> roleIds = userAddVO.getRoleIds();
+                boolean updateUserRoleRes = roleService.updateUserRole(userAddVO.getUserId(), roleIds);
+                return new ResponseModel<>(updateUserRoleRes);
+            }
+
         }
         return new ResponseModel<>(ResultMsgEnum.ERROR);
     }

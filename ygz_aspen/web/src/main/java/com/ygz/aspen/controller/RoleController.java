@@ -3,6 +3,7 @@ package com.ygz.aspen.controller;
 import com.ygz.aspen.common.base.PageQueryParam;
 import com.ygz.aspen.common.base.PageQueryResult;
 import com.ygz.aspen.common.base.ResponseModel;
+import com.ygz.aspen.common.base.ResultMsgEnum;
 import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.param.sys.RoleDTO;
@@ -14,10 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,5 +54,32 @@ public class RoleController {
         return roleInfoVO;
     }
 
+    @PostMapping("save")
+    @RequiresRoles("admin")
+    public ResponseModel<Boolean> saveRole(@RequestBody RoleInfoVO roleInfoVO){
+        if(roleInfoVO == null || StringUtils.isBlank(roleInfoVO.getRoleName())){
+            return new ResponseModel<>(ResultMsgEnum.PARAM_ERROR);
+        }
+        if(roleInfoVO.getRoleId() == null){
+            if(StringUtils.isBlank(roleInfoVO.getRoleCode())){
+                return new ResponseModel<>(ResultMsgEnum.PARAM_ERROR);
+            }
+            Role role = new Role();
+            role.setRoleName(roleInfoVO.getRoleName());
+            role.setRoleCode(roleInfoVO.getRoleCode());
+            return new ResponseModel<>(roleService.addRole(role));
+        }else{
+            Role role = new Role();
+            role.setRoleName(roleInfoVO.getRoleName());
+            role.setRoleId(roleInfoVO.getRoleId());
+            return new ResponseModel<>(roleService.updateRole(role));
+        }
+    }
+
+    @GetMapping("/delRole")
+    @RequiresRoles("admin")
+    public ResponseModel<Boolean> delRole(@RequestParam(value = "roleId") Long roleId){
+        return new ResponseModel<>(roleService.delRole(roleId));
+    }
 
 }

@@ -14,6 +14,9 @@ public class RoleInfoVO {
     @ApiModelProperty("角色名称")
     private String roleName;
 
+    @ApiModelProperty("角色code")
+    private String roleCode;
+
     @ApiModelProperty("是否被删除")
     private Integer isDeleted;
 

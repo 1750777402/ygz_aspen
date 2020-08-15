@@ -11,8 +11,42 @@
         <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
 
+    <insert id="batchAddUserRole" parameterType="java.util.List">
+        INSERT INTO UserRole(roleId, userId, isDeleted, created, updated)
+        VALUES
+        <foreach collection="userRoleList" item="item" separator=",">
+            (
+                #{item.roleId,jdbcType=BIGINT},
+                #{item.userId,jdbcType=BIGINT},
+                #{item.isDeleted,jdbcType=TINYINT},
+                #{item.created,jdbcType=BIGINT},
+                #{item.updated,jdbcType=BIGINT}
+            )
+        </foreach>
+
+    </insert>
+
+    <update id="batchDelUserRole">
+        update UserRole set isDeleted = 1, updated=unix_timestamp() where id in
+        <foreach collection="roleIds" open="(" separator="," close=")" item="rId">
+            #{rId, jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <update id="delUserRole">
+        update UserRole set isDeleted = 1, updated=unix_timestamp() where userId = #{userId,jdbcType=BIGINT}
+    </update>
+
     <select id="selectUserRoleByUserId" resultMap="BaseResultMap">
         select * from `UserRole` where userId = #{userId,jdbcType=BIGINT} and isDeleted = 0
+    </select>
+
+    <select id="getUserRoleByUserIds" resultType="com.ygz.aspen.model.sys.UserRole">
+        select * from `UserRole` where userId in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId,jdbcType=BIGINT}
+        </foreach>
+         and isDeleted = 0
     </select>
 
     <insert id="addUserRole" parameterType="com.ygz.aspen.model.sys.UserRole" useGeneratedKeys="true" keyProperty="userId">

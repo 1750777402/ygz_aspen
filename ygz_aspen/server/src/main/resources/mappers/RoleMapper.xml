@@ -11,6 +11,18 @@
         <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
 
+    <update id="updateRole">
+        UPDATE `Role`
+        SET updated=unix_timestamp(), roleName=#{roleName,jdbcType=VARCHAR}
+        where roleId = #{roleId, jdbcType=BIGINT} limit 1
+    </update>
+
+    <update id="delRole">
+        UPDATE `Role`
+        SET updated=unix_timestamp(), isDeleted=1
+        where roleId = #{roleId, jdbcType=BIGINT} limit 1
+    </update>
+
     <select id="getRoleById" resultMap="BaseResultMap">
         select * from `Role` where roleId = #{roleId,jdbcType=BIGINT}
     </select>

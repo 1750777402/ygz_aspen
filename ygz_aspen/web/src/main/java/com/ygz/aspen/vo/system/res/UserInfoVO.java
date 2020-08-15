@@ -25,6 +25,9 @@ public class UserInfoVO {
     @ApiModelProperty("角色code列表")
     private List<String> roles;
 
+    @ApiModelProperty("角色Id集合")
+    private List<Long> roleIds;
+
     @ApiModelProperty("用户手机")
     private String phone;
 

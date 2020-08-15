@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/role'
+import { saveRole } from '@/api/role'
 export default {
   props: {
     isAdd: {
@@ -56,7 +56,7 @@ export default {
       })
     },
     doAdd() {
-      add(this.form).then(res => {
+      saveRole(this.form).then(res => {
         this.resetForm()
         this.$message({
           showClose: true,
@@ -72,7 +72,7 @@ export default {
       })
     },
     doEdit() {
-      edit(this.form.id, this.form).then(res => {
+      saveRole(this.form.id, this.form).then(res => {
         this.resetForm()
         this.$message({
           showClose: true,
