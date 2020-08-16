@@ -18,4 +18,5 @@ public interface MenuMapper {
 
     int countMenu(MenuDTO menuDTO);
 
+    int updateMenuById(Menu menu);
 }

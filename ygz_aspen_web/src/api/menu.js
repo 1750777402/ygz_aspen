@@ -20,40 +20,25 @@ export function getMenuTree(roleId) {
   })
 }
 
-export function add(data) {
+export function saveMenu(data) {
   return request({
-    url: 'api/menus/',
+    url: '/menu/save',
     method: 'post',
     data
   })
 }
 
-export function del(id) {
+export function delMenu(id) {
   return request({
-    url: 'api/menus/' + id + '/',
-    method: 'delete'
-  })
-}
-
-export function edit(id, data) {
-  return request({
-    url: 'api/menus/' + id + '/',
-    method: 'put',
-    data
-  })
-}
-
-export function retrieve(id) {
-  return request({
-    url: 'api/menus/' + id + '/',
+    url: '/menu/del?menuId=' + id,
     method: 'get'
   })
 }
 
-export function save(id, data) {
+export function getMenuNext(parentMenuId) {
+  var url = 'menu/getMenuNext?parentMenuId=' + parentMenuId
   return request({
-    url: 'api/menus/' + id + '/',
-    method: 'patch',
-    data
+    url: url,
+    method: 'get'
   })
 }

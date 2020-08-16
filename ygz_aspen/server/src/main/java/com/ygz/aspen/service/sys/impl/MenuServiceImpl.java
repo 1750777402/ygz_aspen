@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +37,7 @@ public class MenuServiceImpl implements MenuService {
         if(page == null){
             return new PageQueryResult<>();
         }
+        dto.setIsDeleted(0);
         int count = menuMapper.countMenu(dto);
         List<Menu> menus = null;
         if(count > 0){
@@ -169,6 +172,63 @@ public class MenuServiceImpl implements MenuService {
             roleMenuList.add(roleMenu);
         });
         return roleMenuMapper.batchAddRoleMenu(roleMenuList);
+    }
+
+    @Override
+    public List<Menu> getMenuNext(Long parentMenuId) {
+        if(parentMenuId == null){
+            parentMenuId = 0L;
+        }
+        MenuDTO menuDTO = new MenuDTO();
+        menuDTO.setParentId(parentMenuId);
+        menuDTO.setIsDeleted(0);
+        menuDTO.setOrderByClause(" sort ");
+        return menuMapper.selectMenuList(menuDTO);
+    }
+
+    @Override
+    public Map<Long, Boolean> getMenuIsExistLowerLevel(List<Long> menuIds) {
+        Map<Long, Boolean> resMap = new HashMap<>();
+        if(CollectionUtils.isEmpty(menuIds)){
+            return resMap;
+        }
+        menuIds.forEach(menuId -> resMap.put(menuId, false));
+        MenuDTO menuDTO = new MenuDTO();
+        menuDTO.setParentIds(menuIds);
+        menuDTO.setIsDeleted(0);
+        menuDTO.setOrderByClause(" sort ");
+        List<Menu> menuList = menuMapper.selectMenuList(menuDTO);
+        if(CollectionUtils.isNotEmpty(menuList)){
+            menuList.forEach(menu -> resMap.put(menu.getParentId(), true));
+        }
+        return resMap;
+    }
+
+    @Override
+    public Boolean updateMenuById(Menu menu) {
+        if(menu == null || menu.getMenuId() == null){
+            return false;
+        }
+        int updateRes = menuMapper.updateMenuById(menu);
+        if(updateRes > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean delMenuById(Long menuId) {
+        if(menuId == null){
+            return false;
+        }
+        Menu menu = new Menu();
+        menu.setMenuId(menuId);
+        menu.setIsDeleted(1);
+        int updateRes = menuMapper.updateMenuById(menu);
+        if(updateRes > 0){
+            return true;
+        }
+        return false;
     }
 
 }

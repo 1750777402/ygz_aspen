@@ -13,6 +13,12 @@ public class ResponseModel<T> implements Serializable {
     public ResponseModel() {
     }
 
+    public ResponseModel(T data){
+        this.data = data;
+        this.code = ResultMsgEnum.SUCCESS.getCode();
+        this.message = ResultMsgEnum.SUCCESS.getMessage();
+    }
+
     public ResponseModel(Integer code, String message, T data){
         this.message = message;
         this.code = code;
@@ -22,12 +28,6 @@ public class ResponseModel<T> implements Serializable {
     public ResponseModel(ResultMsgEnum resultMsgEnum){
         this.code = resultMsgEnum.getCode();
         this.message = resultMsgEnum.getMessage();
-    }
-
-    public ResponseModel(T data){
-        this.data = data;
-        this.code = ResultMsgEnum.SUCCESS.getCode();
-        this.message = ResultMsgEnum.SUCCESS.getMessage();
     }
 
 

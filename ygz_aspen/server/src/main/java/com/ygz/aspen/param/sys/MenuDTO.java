@@ -16,7 +16,7 @@ public class MenuDTO extends BaseQueryParam {
     /**
      * 菜单名称
      */
-    private String name;
+    private String menuName;
 
     /**
      * 父级菜单id

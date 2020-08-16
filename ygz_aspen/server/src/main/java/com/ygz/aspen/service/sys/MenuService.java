@@ -7,6 +7,7 @@ import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.param.sys.MenuDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MenuService {
 
@@ -24,4 +25,16 @@ public interface MenuService {
 
     boolean updateRoleMenu(Long roleId, List<Long> menuIds);
 
+    List<Menu> getMenuNext(Long parentMenuId);
+
+    /**
+     * 批量获取是否有下一级菜单
+     * @param menuIds
+     * @return
+     */
+    Map<Long, Boolean> getMenuIsExistLowerLevel(List<Long> menuIds);
+
+    Boolean updateMenuById(Menu menu);
+
+    Boolean delMenuById(Long menuId);
 }

@@ -18,7 +18,7 @@ public class Menu extends BaseModel {
     /**
      * 菜单名称
      */
-    private String name;
+    private String menuName;
 
     /**
      * 父级菜单id

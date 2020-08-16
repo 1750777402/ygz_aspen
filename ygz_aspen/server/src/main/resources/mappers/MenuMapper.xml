@@ -4,7 +4,7 @@
 
     <resultMap id="BaseResultMap" type="com.ygz.aspen.model.sys.Menu">
         <id column="menuId" property="menuId" jdbcType="BIGINT"/>
-        <id column="name" property="name" jdbcType="VARCHAR"/>
+        <id column="menuName" property="menuName" jdbcType="VARCHAR"/>
         <id column="parentId" property="parentId" jdbcType="BIGINT"/>
         <id column="sort" property="sort" jdbcType="INTEGER"/>
         <id column="icon" property="icon" jdbcType="VARCHAR"/>
@@ -18,10 +18,10 @@
 
     <insert id="addMenu" parameterType="com.ygz.aspen.model.sys.Menu" useGeneratedKeys="true" keyProperty="menuId">
         INSERT INTO
-            `menu`(`name`, `parentId`, `sort`, `icon`, `hidden`
+            `menu`(`menuName`, `parentId`, `sort`, `icon`, `hidden`
             , `path`, `component`, `isDeleted`, `created`, `updated`)
         VALUES
-            (#{name,jdbcType=VARCHAR},
+            (#{menuName,jdbcType=VARCHAR},
              #{parentId,jdbcType=BIGINT},
              #{sort,jdbcType=INTEGER},
              #{icon,jdbcType=VARCHAR},
@@ -33,6 +33,39 @@
              #{updated,jdbcType=BIGINT})
     </insert>
 
+    <update id="updateMenuById">
+        UPDATE `Menu`
+        <set>
+            updated=unix_timestamp(),
+            <if test="menuName != null and menuName != ''" >
+                menuName = #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null" >
+                parentId = #{parentId,jdbcType=BIGINT},
+            </if>
+            <if test="sort != null" >
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="icon != null and icon != ''" >
+                icon = #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="hidden != null" >
+                hidden = #{hidden,jdbcType=VARCHAR},
+            </if>
+            <if test="path != null and path != ''" >
+                path = #{path,jdbcType=VARCHAR},
+            </if>
+            <if test="component != null and component != ''" >
+                component = #{component,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null" >
+                isDeleted = #{isDeleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where menuId = #{menuId, jdbcType=BIGINT}
+        limit 1
+    </update>
+
     <select id="selectMenuById" resultMap="BaseResultMap">
         select * from `Menu` where menuId = #{menuId,jdbcType=BIGINT}
     </select>
@@ -40,8 +73,8 @@
     <select id="selectMenuList" resultType="com.ygz.aspen.model.sys.Menu">
         select * from `Menu`
         where 1=1
-        <if test="name != null">
-            and `name` = #{name, jdbcType=VARCHAR}
+        <if test="menuName != null">
+            and `menuName` = #{menuName, jdbcType=VARCHAR}
         </if>
         <if test="parentId != null">
             and parentId = #{parentId, jdbcType=BIGINT}
@@ -74,8 +107,8 @@
     <select id="countMenu" resultType="java.lang.Integer">
         select count(*) from `Menu`
         where 1=1
-        <if test="name != null">
-            and `name` = #{name, jdbcType=VARCHAR}
+        <if test="menuName != null">
+            and `menuName` = #{menuName, jdbcType=VARCHAR}
         </if>
         <if test="parentId != null">
             and parentId = #{parentId, jdbcType=BIGINT}

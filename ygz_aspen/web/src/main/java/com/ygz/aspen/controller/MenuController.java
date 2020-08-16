@@ -8,6 +8,7 @@ import com.ygz.aspen.common.base.ResultMsgEnum;
 import com.ygz.aspen.model.sys.Menu;
 import com.ygz.aspen.param.sys.MenuDTO;
 import com.ygz.aspen.service.sys.MenuService;
+import com.ygz.aspen.vo.system.res.MenuCascaderVO;
 import com.ygz.aspen.vo.system.res.MenuInfoVO;
 import com.ygz.aspen.vo.system.res.MenuTreeVO;
 import com.ygz.aspen.vo.system.res.RoleMenuTreeVO;
@@ -15,13 +16,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,7 +42,7 @@ public class MenuController {
         }
         MenuDTO dto = new MenuDTO();
         if(StringUtils.isNotEmpty(menuName)){
-            dto.setName(menuName);
+            dto.setMenuName(menuName);
         }
         dto.setParentId(parentMenuId);
         List<MenuInfoVO> menuInfoVOS = new ArrayList<>();
@@ -62,7 +62,7 @@ public class MenuController {
         menuInfoVO.setHidden(menu.getHidden());
         menuInfoVO.setIcon(menu.getIcon());
         menuInfoVO.setMenuId(menu.getMenuId());
-        menuInfoVO.setMenuName(menu.getName());
+        menuInfoVO.setMenuName(menu.getMenuName());
         menuInfoVO.setParentId(menu.getParentId());
         menuInfoVO.setPath(menu.getPath());
         menuInfoVO.setSort(menu.getSort());
@@ -114,8 +114,59 @@ public class MenuController {
         MenuTreeVO treeVO = new MenuTreeVO();
         treeVO.setDisabled(menu.getHidden() == 0);
         treeVO.setId(menu.getMenuId());
-        treeVO.setLabel(menu.getName());
+        treeVO.setLabel(menu.getMenuName());
         return treeVO;
     }
 
+
+    @GetMapping("/getMenuNext")
+    @RequiresRoles("admin")
+    public ResponseModel<List<MenuCascaderVO>> getMenuNext(@RequestParam("parentMenuId") Long parentMenuId){
+        List<MenuCascaderVO> menuCascaderVOList = new ArrayList<>();
+        List<Menu> menuList = menuService.getMenuNext(parentMenuId);
+        if(CollectionUtils.isNotEmpty(menuList)){
+            List<Long> menuIds = menuList.stream().map(Menu::getMenuId).collect(Collectors.toList());
+            Map<Long, Boolean> lowerLevelMenu = menuService.getMenuIsExistLowerLevel(menuIds);
+            menuList.forEach(menu -> {
+                MenuCascaderVO menuVO = new MenuCascaderVO();
+                menuVO.setLabel(menu.getMenuName());
+                menuVO.setValue(menu.getMenuId());
+                menuVO.setLeaf(!lowerLevelMenu.get(menu.getMenuId()));
+                menuCascaderVOList.add(menuVO);
+            });
+        }
+        return new ResponseModel<>(menuCascaderVOList);
+    }
+
+    @PostMapping("/save")
+    @RequiresRoles("admin")
+    public ResponseModel<Boolean> save(@RequestBody MenuInfoVO menuInfoVO){
+        if(menuInfoVO == null){
+            return new ResponseModel<>(ResultMsgEnum.PARAM_ERROR);
+        }
+        if(menuInfoVO.getMenuId() == null){
+            return new ResponseModel<>(menuService.addMenu(menuInfoVoToMenu(menuInfoVO)));
+        }else{
+            return new ResponseModel<>(menuService.updateMenuById(menuInfoVoToMenu(menuInfoVO)));
+        }
+    }
+
+    private Menu menuInfoVoToMenu(MenuInfoVO menuInfoVO){
+        Menu menu = new Menu();
+        menu.setComponent(menuInfoVO.getComponent());
+        menu.setHidden(menuInfoVO.getHidden());
+        menu.setIcon(menuInfoVO.getIcon());
+        menu.setMenuName(menuInfoVO.getMenuName());
+        menu.setParentId(menuInfoVO.getParentId());
+        menu.setPath(menuInfoVO.getPath());
+        menu.setSort(menuInfoVO.getSort());
+        menu.setMenuId(menuInfoVO.getMenuId());
+        return menu;
+    }
+
+    @GetMapping("/del")
+    @RequiresRoles("admin")
+    public ResponseModel<Boolean> del(@RequestParam("menuId") Long menuId){
+        return new ResponseModel<>(menuService.delMenuById(menuId));
+    }
 }

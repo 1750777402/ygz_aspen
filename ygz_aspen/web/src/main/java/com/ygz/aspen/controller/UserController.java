@@ -173,12 +173,12 @@ public class UserController {
         UserMenuVO menuVO = new UserMenuVO();
         menuVO.setId(menu.getMenuId());
         menuVO.setSort(menu.getSort());
-        menuVO.setName(menu.getName());
+        menuVO.setName(menu.getMenuName());
         menuVO.setPath(menu.getPath());
         menuVO.setComponent(menu.getComponent());
         menuVO.setHidden(menu.getHidden() == 0);
         menuVO.setParentId(menu.getParentId());
-        menuVO.setMeta(new MenuMeatVO(menu.getName(), menu.getIcon()));
+        menuVO.setMeta(new MenuMeatVO(menu.getMenuName(), menu.getIcon()));
         if("Layout".equals(menu.getComponent())){
             menuVO.setRedirect("noredirect");
         }
