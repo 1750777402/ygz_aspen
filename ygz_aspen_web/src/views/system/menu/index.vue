@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { del, getMenuTree } from '@/api/menu'
+import { del, getMenuList } from '@/api/menu'
 import { parseTime } from '@/utils/index'
 // import edit from './module/edit'
 export default {
@@ -108,7 +108,7 @@ export default {
       console.log(index, row)
     },
     getMenus() {
-      getMenuTree(this.queryMenuName, 0, this.pageIndex, this.pageSize).then(res => {
+      getMenuList(this.queryMenuName, 0, this.pageIndex, this.pageSize).then(res => {
         if (res.code === 1001) {
           if (res.data) {
             const dataList = res.data.dataList.map(item => {
@@ -129,7 +129,7 @@ export default {
       this.getMenus()
     },
     getNextMenu(tree, treeNode, resolve) {
-      getMenuTree(this.queryMenuName, tree.menuId, this.pageIndex, this.pageSize).then(res => {
+      getMenuList(this.queryMenuName, tree.menuId, this.pageIndex, this.pageSize).then(res => {
         if (res.code === 1001) {
           if (res.data) {
             const dataList = res.data.dataList.map(item => {

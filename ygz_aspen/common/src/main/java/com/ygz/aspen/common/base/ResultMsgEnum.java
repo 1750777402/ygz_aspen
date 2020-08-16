@@ -7,7 +7,8 @@ public enum ResultMsgEnum {
     UNAUTHORIZED(2002,"获取登录用户信息失败"),
     ERROR(2003, "操作失败"),
     USER_NO_POWER(2004, "权限不足"),
-    PARAM_ERROR(2005, "参数错误");
+    PARAM_ERROR(2005, "参数错误"),
+    DATA_NOT_FOUND(2006, "数据查不到");
 
     private Integer code;
 

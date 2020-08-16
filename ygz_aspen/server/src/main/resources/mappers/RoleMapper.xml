@@ -13,7 +13,18 @@
 
     <update id="updateRole">
         UPDATE `Role`
-        SET updated=unix_timestamp(), roleName=#{roleName,jdbcType=VARCHAR}
+        <set>
+            updated=unix_timestamp(),
+            <if test="roleName != null and roleName != ''">
+                roleName=#{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleCode != null and roleCode != ''">
+                roleCode=#{roleCode,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null">
+                isDeleted=#{isDeleted,jdbcType=TINYINT},
+            </if>
+        </set>
         where roleId = #{roleId, jdbcType=BIGINT} limit 1
     </update>
 

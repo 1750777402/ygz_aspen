@@ -19,8 +19,12 @@
           <span>{{ scope.row.isDeleted === 0 ? '正常':'冻结' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200px" align="center">
+      <el-table-column label="操作" width="350px" align="center">
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleRoleMenu(scope.$index, scope.row)">设置菜单</el-button>
           <el-button
             size="mini"
             type="primary"
@@ -63,11 +67,30 @@
         <el-button type="primary" @click="saveRole">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- RoleMenuTerr dialog -->
+    <el-dialog :append-to-body="true" :visible.sync="dialogRoleMenuVisible" title="设置角色菜单" width="550px">
+      <el-tree
+        ref="roleMenuTree"
+        :data="roleMenuTreeData"
+        :default-checked-keys="defaultCheckedKeys"
+        :props="roleMenuTreeDefaultProps"
+        :default-expand-all="true"
+        show-checkbox
+        node-key="id"
+      >
+      </el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelSetRoleMenu">取 消</el-button>
+        <el-button type="primary" @click="saveRoleMenu">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { delRole, saveRole, getRoleList } from '@/api/role'
+import { delRole, saveRole, getRoleList, saveRoleMenu } from '@/api/role'
+import { getMenuTree } from '@/api/menu'
 import { parseTime } from '@/utils/index'
 export default {
   components: { },
@@ -92,13 +115,21 @@ export default {
       pageSize: 20,
       queryRoleName: '',
       dialogAddRoleVisible: false,
+      dialogRoleMenuVisible: false,
       addRoleForm: {
         roleName: '',
         roleCode: '',
         roleId: null
       },
       formLabelWidth: '120px',
-      formTitle: ''
+      formTitle: '',
+      roleMenuTreeData: [],
+      roleMenuTreeDefaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      defaultCheckedKeys: [],
+      selectRoleId: null
     }
   },
   created() {
@@ -184,12 +215,48 @@ export default {
         console.log(err)
       })
     },
+    saveRoleMenu() {
+      const menNodes = this.$refs.roleMenuTree.getCheckedNodes(false, true)
+      const menIds = []
+      if (menNodes != null && menNodes.length > 0) {
+        menNodes.forEach(item => menIds.push(item.id))
+      }
+      saveRoleMenu(this.selectRoleId, menIds).then(res => {
+        if (res.code === 1001) {
+          if (res.data) {
+            this.cancelSetRoleMenu()
+          } else {
+            this.$message.error(res.message)
+          }
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
     cancelAddRole() {
       this.dialogAddRoleVisible = false
       this.clearFormData()
     },
+    cancelSetRoleMenu() {
+      this.dialogRoleMenuVisible = false
+      this.selectRoleId = null
+    },
     clearFormData() {
       this.addRoleForm = { roleName: '', roleId: null }
+    },
+    handleRoleMenu(index, row) {
+      this.selectRoleId = row.roleId
+      this.dialogRoleMenuVisible = true
+      getMenuTree(row.roleId).then(res => {
+        if (res.code === 1001) {
+          if (res.data) {
+            this.roleMenuTreeData = res.data.treeVOS
+            this.defaultCheckedKeys = res.data.roleMenuIds
+          }
+        } else {
+          this.$message.error('查询菜单树出错')
+        }
+      })
     }
   }
 }

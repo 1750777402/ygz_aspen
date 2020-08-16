@@ -17,7 +17,7 @@ public interface UserRoleMapper {
 
     int batchAddUserRole(@Param("userRoleList") List<UserRole> userRoleList);
 
-    int batchDelUserRole(@Param("roleIds") List<Long> delIds);
+    int batchDelUserRoleByUserRoleId(@Param("userRoleIds") List<Long> delIds);
 
     int delUserRole(@Param("userId") Long userId);
 }

@@ -23,18 +23,17 @@
                 #{item.updated,jdbcType=BIGINT}
             )
         </foreach>
-
     </insert>
 
-    <update id="batchDelUserRole">
-        update UserRole set isDeleted = 1, updated=unix_timestamp() where id in
-        <foreach collection="roleIds" open="(" separator="," close=")" item="rId">
+    <delete id="batchDelUserRoleByUserRoleId">
+        delete FROM UserRole where id in
+        <foreach collection="userRoleIds" open="(" separator="," close=")" item="rId">
             #{rId, jdbcType=BIGINT}
         </foreach>
-    </update>
+    </delete>
 
     <update id="delUserRole">
-        update UserRole set isDeleted = 1, updated=unix_timestamp() where userId = #{userId,jdbcType=BIGINT}
+        delete FROM UserRole where userId = #{userId,jdbcType=BIGINT}
     </update>
 
     <select id="selectUserRoleByUserId" resultMap="BaseResultMap">

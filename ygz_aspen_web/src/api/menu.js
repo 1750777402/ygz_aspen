@@ -1,11 +1,19 @@
 import request from '@/utils/request'
 
 // 获取所有的菜单树
-export function getMenuTree(queryMenuName, parentMenuId, pageIndex, pageSize) {
+export function getMenuList(queryMenuName, parentMenuId, pageIndex, pageSize) {
   var url = 'menu/tree?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&parentMenuId=' + parentMenuId
   if (queryMenuName) {
     url += '&menuName=' + queryMenuName
   }
+  return request({
+    url: url,
+    method: 'get'
+  })
+}
+
+export function getMenuTree(roleId) {
+  var url = 'menu/roleMenuTree?roleId=' + roleId
   return request({
     url: url,
     method: 'get'

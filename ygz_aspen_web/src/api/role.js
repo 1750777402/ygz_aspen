@@ -29,3 +29,14 @@ export function delRole(id) {
     method: 'get'
   })
 }
+
+export function saveRoleMenu(roleId, menuIds) {
+  return request({
+    url: '/role/saveRoleMenu',
+    method: 'post',
+    data: {
+      roleId: roleId,
+      menuIds: menuIds
+    }
+  })
+}

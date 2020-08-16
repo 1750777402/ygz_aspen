@@ -165,29 +165,44 @@ public class RoleServiceImpl implements RoleService {
                             delIds.add(userRole.getId());
                         }
                     });
+                    boolean delBoolean = true;
                     //把老的删除掉
                     if(CollectionUtils.isNotEmpty(delIds)){
-                        int delRes = userRoleMapper.batchDelUserRole(delIds);
+                        int delRes = userRoleMapper.batchDelUserRoleByUserRoleId(delIds);
                         log.info("批量删除用户:{}角色结果:{}", userId, delRes);
+                        if(delRes < 1){
+                            delBoolean = false;
+                        }
                     }
+                    boolean batchAddBoolean = true;
                     //把新的加进去
                     if(CollectionUtils.isNotEmpty(roleIds)){
                         int addRes = batchAddUserRole(roleIds, userId);
                         log.info("批量新增用户:{}角色结果:{}", userId, addRes);
+                        if(addRes < 1){
+                            batchAddBoolean = false;
+                        }
                     }
+                    return delBoolean && batchAddBoolean;
                 }else{
                     int addRes = batchAddUserRole(roleIds, userId);
                     log.info("批量新增用户:{}角色结果:{}", userId, addRes);
+                    if(addRes > 0){
+                        return true;
+                    }
                 }
             }else{
                 int delRes = userRoleMapper.delUserRole(userId);
                 log.info("批量删除用户:{}角色结果:{}", userId, delRes);
+                if(delRes > 0){
+                    return true;
+                }
             }
-            return true;
         } catch (Exception e) {
             log.error("更新用户角色出现异常:{}", e);
             throw e;
         }
+        return false;
     }
 
     @Override

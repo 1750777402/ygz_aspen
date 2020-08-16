@@ -8,9 +8,11 @@ import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.model.sys.User;
 import com.ygz.aspen.param.sys.RoleDTO;
 import com.ygz.aspen.param.sys.UserDTO;
+import com.ygz.aspen.service.sys.MenuService;
 import com.ygz.aspen.service.sys.RoleService;
 import com.ygz.aspen.vo.system.res.RoleInfoVO;
 import com.ygz.aspen.vo.system.res.UserInfoVO;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +28,9 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private MenuService menuService;
 
     @GetMapping("/list")
     @RequiresRoles("admin")
@@ -71,6 +76,7 @@ public class RoleController {
         }else{
             Role role = new Role();
             role.setRoleName(roleInfoVO.getRoleName());
+            role.setRoleCode(roleInfoVO.getRoleCode());
             role.setRoleId(roleInfoVO.getRoleId());
             return new ResponseModel<>(roleService.updateRole(role));
         }
@@ -80,6 +86,20 @@ public class RoleController {
     @RequiresRoles("admin")
     public ResponseModel<Boolean> delRole(@RequestParam(value = "roleId") Long roleId){
         return new ResponseModel<>(roleService.delRole(roleId));
+    }
+
+    @PostMapping("/saveRoleMenu")
+    @RequiresRoles("admin")
+    public ResponseModel<Boolean> saveRoleMenu(@RequestBody RoleInfoVO roleInfoVO){
+        if(roleInfoVO == null || roleInfoVO.getRoleId() == null){
+            return new ResponseModel<>(ResultMsgEnum.PARAM_ERROR);
+        }
+        Long roleId = roleInfoVO.getRoleId();
+        if(CollectionUtils.isNotEmpty(roleInfoVO.getMenuIds())){
+            return new ResponseModel(menuService.updateRoleMenu(roleId, roleInfoVO.getMenuIds()));
+        }else{
+            return new ResponseModel(menuService.delRoleMenu(roleId));
+        }
     }
 
 }

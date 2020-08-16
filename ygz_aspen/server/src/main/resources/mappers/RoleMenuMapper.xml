@@ -11,6 +11,31 @@
         <id column="updated" property="updated" jdbcType="BIGINT"/>
     </resultMap>
 
+    <insert id="batchAddRoleMenu" parameterType="java.util.List">
+        INSERT INTO RoleMenu(roleId, menuId, isDeleted, created, updated)
+        VALUES
+        <foreach collection="roleMenuList" item="item" separator=",">
+            (
+            #{item.roleId,jdbcType=BIGINT},
+            #{item.menuId,jdbcType=BIGINT},
+            #{item.isDeleted,jdbcType=TINYINT},
+            #{item.created,jdbcType=BIGINT},
+            #{item.updated,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <update id="delRoleMenu">
+        delete FROM RoleMenu where roleId = #{roleId,jdbcType=BIGINT}
+    </update>
+
+    <delete id="batchDelRoleMenuByRoleMenuIds">
+        delete FROM RoleMenu where id in
+        <foreach collection="roleMenuIds" open="(" separator="," close=")" item="rId">
+            #{rId, jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
     <select id="selectRoleMenuById" resultMap="BaseResultMap">
         select * from `RoleMenu` where id = #{id,jdbcType=BIGINT}
     </select>
@@ -32,6 +57,20 @@
              #{isDeleted,jdbcType=TINYINT},
              #{created,jdbcType=BIGINT},
              #{updated,jdbcType=BIGINT})
+    </insert>
+    <insert id="batchAddRooleMenu">
+        INSERT INTO
+            `RoleMenu`(`roleId`, `menuId`, `isDeleted`, `created`, `updated`)
+        VALUES
+        <foreach collection="userRoleList" item="item" separator=",">
+            (
+            #{item.roleId,jdbcType=BIGINT},
+            #{item.menuId,jdbcType=BIGINT},
+            #{item.isDeleted,jdbcType=TINYINT},
+            #{item.created,jdbcType=BIGINT},
+            #{item.updated,jdbcType=BIGINT}
+            )
+        </foreach>
     </insert>
 
 

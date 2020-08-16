@@ -30,4 +30,5 @@ public interface RoleService {
     boolean updateUserRole(Long userId, List<Long> roleIds);
 
     Map<Long, Role> getRoleListByRoleIds(List<Long> roleIds);
+
 }
