@@ -31,4 +31,6 @@ public interface RoleService {
 
     Map<Long, Role> getRoleListByRoleIds(List<Long> roleIds);
 
+    List<UserRole> getUserRoleByRoleId(Long roleId);
+
 }

@@ -31,7 +31,7 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
-    @GetMapping("/tree")
+    @GetMapping("/list")
     @RequiresRoles("admin")
     public ResponseModel<PageQueryResult<MenuInfoVO>> getMenuList(@RequestParam(value = "menuName", required = false) String menuName,
                                                                   @RequestParam(value = "parentMenuId", required = false) Long parentMenuId,
@@ -81,14 +81,14 @@ public class MenuController {
             roleMenuIds = menuList.stream().map(Menu::getMenuId).collect(Collectors.toList());
             vo.setRoleMenuIds(roleMenuIds);
         }
-        vo.setTreeVOS(getMenuTree(allMenu, 0L, roleMenuIds));
+        vo.setTreeVOS(getRoleMenuTree(allMenu, 0L, roleMenuIds));
         return new ResponseModel(vo);
     }
 
     /**
      * 递归获取菜单树
      */
-    private List<MenuTreeVO> getMenuTree(List<Menu> menus, Long parentId, List<Long> roleMenuIds){
+    private List<MenuTreeVO> getRoleMenuTree(List<Menu> menus, Long parentId, List<Long> roleMenuIds){
         if(CollectionUtils.isEmpty(menus)){
             return null;
         }
@@ -96,11 +96,13 @@ public class MenuController {
         menus.forEach(menu -> {
             if(menu.getParentId().equals(parentId)){
                 MenuTreeVO treeVO = toTreeVO(menu);
-                List<MenuTreeVO> menuTree = getMenuTree(menus, menu.getMenuId(), roleMenuIds);
+                List<MenuTreeVO> menuTree = getRoleMenuTree(menus, menu.getMenuId(), roleMenuIds);
                 if(CollectionUtils.isNotEmpty(menuTree)){
                     treeVO.setChildren(menuTree);
                     //删除返回给前端的非叶子节点菜单
-                    roleMenuIds.remove(menu.getMenuId());
+                    if(CollectionUtils.isNotEmpty(roleMenuIds)){
+                        roleMenuIds.remove(menu.getMenuId());
+                    }
                 }else{
                     treeVO.setChildren(null);
                 }
@@ -119,23 +121,38 @@ public class MenuController {
     }
 
 
-    @GetMapping("/getMenuNext")
+    @GetMapping("/getMenuTree")
     @RequiresRoles("admin")
-    public ResponseModel<List<MenuCascaderVO>> getMenuNext(@RequestParam("parentMenuId") Long parentMenuId){
-        List<MenuCascaderVO> menuCascaderVOList = new ArrayList<>();
-        List<Menu> menuList = menuService.getMenuNext(parentMenuId);
-        if(CollectionUtils.isNotEmpty(menuList)){
-            List<Long> menuIds = menuList.stream().map(Menu::getMenuId).collect(Collectors.toList());
-            Map<Long, Boolean> lowerLevelMenu = menuService.getMenuIsExistLowerLevel(menuIds);
-            menuList.forEach(menu -> {
-                MenuCascaderVO menuVO = new MenuCascaderVO();
-                menuVO.setLabel(menu.getMenuName());
-                menuVO.setValue(menu.getMenuId());
-                menuVO.setLeaf(!lowerLevelMenu.get(menu.getMenuId()));
-                menuCascaderVOList.add(menuVO);
-            });
+    public ResponseModel<List<MenuCascaderVO>> getMenuTree(){
+        List<Menu> menuList = menuService.getAllMenu();
+        return new ResponseModel<>(getMenuTree(menuList, 0L));
+    }
+
+    /**
+     * 递归获取菜单树
+     */
+    private List<MenuCascaderVO> getMenuTree(List<Menu> menus, Long parentId){
+        if(CollectionUtils.isEmpty(menus)){
+            return null;
         }
-        return new ResponseModel<>(menuCascaderVOList);
+        List<MenuCascaderVO> treeVOS = new ArrayList<>();
+        menus.forEach(menu -> {
+            if(menu.getParentId().equals(parentId)){
+                MenuCascaderVO treeVO = new MenuCascaderVO();
+                treeVO.setLabel(menu.getMenuName());
+                treeVO.setValue(menu.getMenuId());
+                List<MenuCascaderVO> menuTree = getMenuTree(menus, menu.getMenuId());
+                if(CollectionUtils.isNotEmpty(menuTree)){
+                    treeVO.setChildren(menuTree);
+                    treeVO.setLeaf(false);
+                }else{
+                    treeVO.setChildren(null);
+                    treeVO.setLeaf(true);
+                }
+                treeVOS.add(treeVO);
+            }
+        });
+        return treeVOS;
     }
 
     @PostMapping("/save")
@@ -167,6 +184,11 @@ public class MenuController {
     @GetMapping("/del")
     @RequiresRoles("admin")
     public ResponseModel<Boolean> del(@RequestParam("menuId") Long menuId){
-        return new ResponseModel<>(menuService.delMenuById(menuId));
+        List<Menu> menuNext = menuService.getMenuNext(menuId);
+        if(CollectionUtils.isNotEmpty(menuNext)){
+            return new ResponseModel<>(ResultMsgEnum.ERROR.getCode(), "当前菜单存在有效下级菜单，无法删除", false);
+        }
+        Boolean delRes = menuService.delMenuById(menuId);
+        return new ResponseModel<>(delRes);
     }
 }

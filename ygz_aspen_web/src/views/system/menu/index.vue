@@ -50,7 +50,7 @@
     <!--分页组件-->
     <el-pagination
       :total="total"
-      :page-sizes="[50, 100, 300]"
+      :page-sizes="[100, 200, 300]"
       style="margin-top: 8px;"
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
@@ -89,7 +89,13 @@
           <el-input v-model="addMenuForm.component" placeholder="组件路径" style="width: 460px;"/>
         </el-form-item>
         <el-form-item label="父级菜单" style="width: 460px;">
-          <el-cascader v-model="addMenuForm.parentId" :props="menuCascader" clearable style="width: 460px;" placeholder="请选择父级菜单，不选择表示为1级菜单"/>
+          <el-cascader
+            v-model="addMenuForm.parentId"
+            :options="menuCascaderOptions"
+            :props="menuCascader"
+            clearable
+            style="width: 460px;"
+            placeholder="请选择父级菜单，不选择表示为1级菜单"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -101,7 +107,7 @@
 </template>
 
 <script>
-import { delMenu, getMenuList, saveMenu, getMenuNext } from '@/api/menu'
+import { delMenu, getMenuList, saveMenu, getMenuTree } from '@/api/menu'
 import { parseTime } from '@/utils/index'
 import IconSelect from '@/components/IconSelect'
 export default {
@@ -129,26 +135,14 @@ export default {
       formLabelWidth: '120px',
       formTitle: '',
       menuCascader: {
-        lazy: true,
-        checkStrictly: true,
-        lazyLoad(node, resolve) {
-          var parentId = 0
-          if (node.value) {
-            parentId = node.value
-          }
-          getMenuNext(parentId).then(res => {
-            if (res.code === 1001) {
-              if (res.data) {
-                resolve(res.data)
-              }
-            }
-          })
-        }
-      }
+        checkStrictly: true
+      },
+      menuCascaderOptions: []
     }
   },
   created() {
     this.getMenus()
+    this.getMenuTree()
   },
   methods: {
     parseTime,
@@ -162,7 +156,7 @@ export default {
         sort: row.sort,
         path: row.path,
         component: row.component,
-        hidden: row.hidden,
+        hidden: row.hidden + '',
         parentId: [row.parentId],
         icon: row.icon
       }
@@ -171,14 +165,19 @@ export default {
     },
     handleDel(index, row) {
       delMenu(row.menuId).then(res => {
-        this.delLoading = false
-        this.getMenus()
-        this.$message({
-          showClose: true,
-          type: 'success',
-          message: '删除成功!',
-          duration: 2500
-        })
+        if (res && res.code === 1001) {
+          this.delLoading = false
+          this.menus = []
+          this.getMenus()
+          this.$message({
+            showClose: true,
+            type: 'success',
+            message: '删除成功!',
+            duration: 2500
+          })
+        } else {
+          this.$message.error(res.message)
+        }
       }).catch(err => {
         this.delLoading = false
         console.log(err)
@@ -251,13 +250,13 @@ export default {
     },
     saveMenu() {
       var menuForm = this.addMenuForm
-      debugger
       if (menuForm.parentId && menuForm.parentId.length > 0) {
         menuForm.parentId = menuForm.parentId[0]
       } else {
         menuForm.parentId = 0
       }
       saveMenu(menuForm).then(res => {
+        this.menus = []
         this.getMenus()
         this.cancelAddMenu()
         this.$message({
@@ -272,6 +271,13 @@ export default {
     },
     selected(name) {
       this.addMenuForm.icon = name
+    },
+    getMenuTree() {
+      getMenuTree().then(res => {
+        this.menuCascaderOptions = res.data
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }

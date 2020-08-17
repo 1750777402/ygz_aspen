@@ -221,6 +221,14 @@ public class RoleServiceImpl implements RoleService {
         return roleMap;
     }
 
+    @Override
+    public List<UserRole> getUserRoleByRoleId(Long roleId) {
+        if(roleId == null){
+            return Lists.newArrayList();
+        }
+        return userRoleMapper.getUserRoleByRoleId(roleId);
+    }
+
     private int batchAddUserRole(List<Long> roleIds, Long userId){
         List<UserRole> userRoleList = new ArrayList<>();
         roleIds.forEach(roleId -> {

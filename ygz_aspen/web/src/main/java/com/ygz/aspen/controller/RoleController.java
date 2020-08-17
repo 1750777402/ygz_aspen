@@ -6,6 +6,7 @@ import com.ygz.aspen.common.base.ResponseModel;
 import com.ygz.aspen.common.base.ResultMsgEnum;
 import com.ygz.aspen.model.sys.Role;
 import com.ygz.aspen.model.sys.User;
+import com.ygz.aspen.model.sys.UserRole;
 import com.ygz.aspen.param.sys.RoleDTO;
 import com.ygz.aspen.param.sys.UserDTO;
 import com.ygz.aspen.service.sys.MenuService;
@@ -85,6 +86,10 @@ public class RoleController {
     @GetMapping("/delRole")
     @RequiresRoles("admin")
     public ResponseModel<Boolean> delRole(@RequestParam(value = "roleId") Long roleId){
+        List<UserRole> userRoleByRoleId = roleService.getUserRoleByRoleId(roleId);
+        if(CollectionUtils.isNotEmpty(userRoleByRoleId)){
+            return new ResponseModel<>(ResultMsgEnum.ERROR.getCode(), "当前角色下存在用户，无法删除", false);
+        }
         return new ResponseModel<>(roleService.delRole(roleId));
     }
 

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // 获取所有的菜单树
 export function getMenuList(queryMenuName, parentMenuId, pageIndex, pageSize) {
-  var url = 'menu/tree?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&parentMenuId=' + parentMenuId
+  var url = 'menu/list?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&parentMenuId=' + parentMenuId
   if (queryMenuName) {
     url += '&menuName=' + queryMenuName
   }
@@ -12,7 +12,7 @@ export function getMenuList(queryMenuName, parentMenuId, pageIndex, pageSize) {
   })
 }
 
-export function getMenuTree(roleId) {
+export function getRoleMenuTree(roleId) {
   var url = 'menu/roleMenuTree?roleId=' + roleId
   return request({
     url: url,
@@ -35,8 +35,8 @@ export function delMenu(id) {
   })
 }
 
-export function getMenuNext(parentMenuId) {
-  var url = 'menu/getMenuNext?parentMenuId=' + parentMenuId
+export function getMenuTree() {
+  var url = 'menu/getMenuTree'
   return request({
     url: url,
     method: 'get'

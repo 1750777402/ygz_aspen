@@ -90,7 +90,7 @@
 
 <script>
 import { delRole, saveRole, getRoleList, saveRoleMenu } from '@/api/role'
-import { getMenuTree } from '@/api/menu'
+import { getRoleMenuTree } from '@/api/menu'
 import { parseTime } from '@/utils/index'
 export default {
   components: { },
@@ -144,13 +144,17 @@ export default {
       this.delLoading = true
       delRole(row.roleId).then(res => {
         this.delLoading = false
-        this.getRoleALL()
-        this.$message({
-          showClose: true,
-          type: 'success',
-          message: '删除成功!',
-          duration: 2500
-        })
+        if (res && res.code === 1001) {
+          this.getRoleALL()
+          this.$message({
+            showClose: true,
+            type: 'success',
+            message: '删除成功!',
+            duration: 2500
+          })
+        } else {
+          this.$message.error(res.message)
+        }
       }).catch(err => {
         this.delLoading = false
         this.$message.error('删除角色出错')
@@ -247,7 +251,7 @@ export default {
     handleRoleMenu(index, row) {
       this.selectRoleId = row.roleId
       this.dialogRoleMenuVisible = true
-      getMenuTree(row.roleId).then(res => {
+      getRoleMenuTree(row.roleId).then(res => {
         if (res.code === 1001) {
           if (res.data) {
             this.roleMenuTreeData = res.data.treeVOS
