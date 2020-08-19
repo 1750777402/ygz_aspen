@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/api/menu")
 public class MenuController {
 
     @Autowired
