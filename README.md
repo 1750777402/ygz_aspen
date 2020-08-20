@@ -22,6 +22,7 @@ demo地址: http://123.207.153.230
 - 集成了redis 但由于个人比较懒 项目中未真正使用
 - jwt配合shiro做权限校验
 - 一些自定义的注解(免登录、单机限流)
+- 数据库字段代码生成（https://github.com/1750777402/ygz_aspen/blob/master/ygz_aspen/server/src/main/java/com/ygz/aspen/generator/Generator.java）
 
 ```
 
