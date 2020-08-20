@@ -91,7 +91,7 @@ idea 导入后端项目 运行springboot项目即可
 ***生产环境的运行***
 
 **1、安装nginx（略）**
-
+```
 参考：https://blog.csdn.net/qq_34203492/article/details/85165509
 然后配置nginx代理：
 listen       80;
@@ -102,7 +102,9 @@ location / {
     index  index.html index.htm;
 }
 把80端口转发到: /usr/local/nginx/html 目录下的index.html 
+
 **这段nginx配置需要根据上面的博客中nginx进行配置，如果不按照博客中进行配置，也可以自行安装nginx进行配置**
+```
 
 **2、生产静态页面**
 ```
